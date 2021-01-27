@@ -1,0 +1,2608 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head hexo-theme='https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1'>
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
+    
+  
+  <!-- 渲染优化 -->
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <link rel="preload" href="/css/first.css" as="style">
+  
+
+  <!-- 页面元数据 -->
+  
+  <title>SQLMAP不完全使用手册 - Hexo</title>
+  
+    <meta name="keywords" content="SQLMAP">
+  
+
+  
+    <meta name="description" content="本文学习SQLMAP工具的使用。以及附录的SQLMAP参数百科全书。">
+  
+
+  <!-- feed -->
+  
+
+  <!-- import meta -->
+  
+
+  <!-- link -->
+  
+
+  <!-- import link -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/first.css">
+
+  
+
+  
+  <link rel="stylesheet" href="/css/style.css" media="print" onload="this.media='all';this.onload=null">
+  <noscript><link rel="stylesheet" href="/css/style.css"></noscript>
+  
+
+  <script id="loadcss"></script>
+
+  
+<script>
+if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMode))
+    document.write(
+	'<style>'+
+		'html{'+
+			'overflow-x: hidden !important;'+
+			'overflow-y: hidden !important;'+
+		'}'+
+		'.kill-ie{'+
+			'text-align:center;'+
+			'height: 100%;'+
+			'margin-top: 15%;'+
+			'margin-bottom: 5500%;'+
+		'}'+
+	'</style>'+
+    '<div class="kill-ie">'+
+        '<h1><b>抱歉，您的浏览器无法访问本站</b></h1>'+
+        '<h3>微软已经于2016年终止了对 Internet Explorer (IE) 10 及更早版本的支持，<br/>'+
+        '继续使用存在极大的安全隐患，请使用当代主流的浏览器进行访问。</h3><br/>'+
+        '<a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-cn/WindowsForBusiness/End-of-IE-support"><strong>了解详情 ></strong></a>'+
+    '</div>');
+</script>
+
+
+<noscript>
+	<style>
+		html{
+			overflow-x: hidden !important;
+			overflow-y: hidden !important;
+		}
+		.kill-noscript{
+			text-align:center;
+			height: 100%;
+			margin-top: 15%;
+			margin-bottom: 5500%;
+		}
+	</style>
+    <div class="kill-noscript">
+        <h1><b>抱歉，您的浏览器无法访问本站</b></h1>
+        <h3>本页面需要浏览器支持（启用）JavaScript</h3><br/>
+        <a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=启用JavaScript"><strong>了解详情 ></strong></a>
+    </div>
+</noscript>
+
+</head>
+
+  <body>
+    
+
+<header id="l_header" class="l_header auto shadow blur show" style='opacity: 0' >
+  <div class='container'>
+  <div id='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h m-phone' id="pjax-header-nav-list">
+        <li><a id="s-comment" class="fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+          <li><a id="s-toc" class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+            <img no-lazy class='logo' src='https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png'/>
+          
+          
+          
+        </a>
+      
+
+			<div class='menu navigation'>
+				<ul class='nav-list-h m-pc'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-rss fa-fw'></i>博客
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/tags/
+                  
+                  
+                  
+                    id="tags"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>标签
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/friends/
+                  
+                  
+                  
+                    id="friends"
+                  >
+                  <i class='fas fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
+
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fas fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="Search..." />
+        </form>
+      </div>
+
+			<ul class='switcher nav-list-h m-phone'>
+				
+					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
+				
+				<li>
+          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-rss fa-fw'></i>博客
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/tags/
+                  
+                  
+                  
+                    id="tags"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>标签
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/friends/
+                  
+                  
+                  
+                    id="friends"
+                  >
+                  <i class='fas fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+		</div>
+	</div>
+  </div>
+</header>
+
+    <div id="l_body">
+      <div id="l_cover">
+  
+    
+        <div id="full" class='cover-wrapper post dock' style="display: none;">
+          
+            <div class='cover-bg lazyload placeholder' data-bg="https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture"></div>
+          
+          <div class='cover-body'>
+  <div class='top'>
+    
+    
+      <p class="title">Volantis</p>
+    
+    
+  </div>
+  <div class='bottom'>
+    <div class='menu navigation'>
+      <div class='list-h'>
+        
+          
+            <a href="/v4/getting-started/"
+              
+              
+              id="v4getting-started">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f5c3.svg'><p>文档</p>
+            </a>
+          
+            <a href="/faqs/"
+              
+              
+              id="faqs">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f516.svg'><p>帮助</p>
+            </a>
+          
+            <a href="/examples/"
+              
+              
+              id="examples">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f396.svg'><p>示例</p>
+            </a>
+          
+            <a href="/contributors/"
+              
+              
+              id="contributors">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f389.svg'><p>社区</p>
+            </a>
+          
+            <a href="/archives/"
+              
+              
+              id="archives">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f4f0.svg'><p>博客</p>
+            </a>
+          
+            <a target="_blank" rel="noopener" href="https://github.com/volantis-x/hexo-theme-volantis/"
+              
+              
+              id="https:githubcomvolantis-xhexo-theme-volantis">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f9ec.svg'><p>源码</p>
+            </a>
+          
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+          <div id="scroll-down" style="display: none;"><i class="fa fa-chevron-down scroll-down-effects"></i></div>
+        </div>
+    
+  
+  </div>
+
+      <div id="safearea">
+        <div class="body-wrapper" id="pjax-container">
+          
+
+<div class='l_main'>
+  <article class="article post white-box reveal md shadow article-type-post" id="post" itemscope itemprop="blogPost">
+  
+
+
+  
+  <div class="article-meta" id="top">
+    
+    
+    
+      <h1 class="title">
+        SQLMAP不完全使用手册
+      </h1>
+      <div class='new-meta-box'>
+        
+          
+            
+<div class='new-meta-item author'>
+  <a class='author' href="/" rel="nofollow">
+    <img no-lazy src="">
+    <p>请设置文章作者</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  <div class='new-meta-item category'>
+    <a class='notlink'>
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <a class="category-link" href="/categories/%E5%B7%A5%E5%85%B7%E8%AF%B4%E6%98%8E%E4%B9%A6/">工具说明书</a>
+    </a>
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Mar 30, 2020</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  <div class="new-meta-item browse leancloud">
+    <a class='notlink'>
+      
+      <div id="lc-pv" data-title="SQLMAP不完全使用手册" data-path="/2020/03/30/SQLMAP%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">
+        <i class="fas fa-eye fa-fw" aria-hidden="true"></i>
+        <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
+        次浏览
+      </div>
+    </a>
+  </div>
+
+
+          
+        
+      </div>
+    
+  </div>
+
+
+  
+  
+  <p>本文学习SQLMAP工具的使用。<br>以及附录的SQLMAP参数百科全书。</p>
+<a id="more"></a>
+
+<h2 id="一、SQLMAP介绍"><a href="#一、SQLMAP介绍" class="headerlink" title="一、SQLMAP介绍"></a>一、SQLMAP介绍</h2><p>SQLMAP是一种开源渗透测试工具，可自动执行SQL注入缺陷的检测和开发过程，并接管数据库服务器。它有强大的检测引擎,针对不同类型的数据库提供多样的渗透测试功能选项，实现数据库识别、数据获取、访问DBMS\操作系统甚至通过带外数据连接的方式执行操作系统的命令。以及从数据库指纹识别、从数据库获取数据、访问底层文件的广泛范围的交换机通过带外连接在操作系统上执行命令。</p>
+<p><strong>SQLMAP支持的数据库</strong>：MySQL, Oracle,PostgreSQL,Microsoft SQL Server, Microsoft Access, IBM DB2, SQLite, Firebird,Sybase和SAP MaxDB等数据库。</p>
+<p>SQLMAP目前支持的注入方式：</p>
+<ul>
+<li>B：布尔型注入（Boolean-base blind SQL injection）</li>
+<li>E：报错型注入（Error-based SQL injection）</li>
+<li>U：可联合查询注入（UNION query SQL injection）</li>
+<li>S：可多语句查询植入（Stacked queries SQL injection）</li>
+<li>T：基于时间延迟注入（Time-base blind SQL injection）</li>
+<li>Q：内联注入（Inline SQL injection）</li>
+</ul>
+<p>SQLMAP功能模块</p>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>至少为目标提供一选项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>请求（Request）</td>
+<td>指定如何连接目标URL的方法</td>
+</tr>
+<tr>
+<td>优化（Optimization）</td>
+<td>优化SQLMAP的性能</td>
+</tr>
+<tr>
+<td>注入（Injection）</td>
+<td>指定测试哪些参数，提供注入Payload和篡改脚本</td>
+</tr>
+<tr>
+<td>侦测（Detection）</td>
+<td>侦测阶段的定制化</td>
+</tr>
+<tr>
+<td>技巧（Techniques）</td>
+<td>调整特定SQL注入技术的技巧</td>
+</tr>
+<tr>
+<td>枚举（Enumeration）</td>
+<td>枚举后端数据库管理系统信息、数据表的数据接口</td>
+</tr>
+<tr>
+<td>暴力执行（Brute Force）</td>
+<td>暴力检查</td>
+</tr>
+<tr>
+<td>用户定义注入函数（User-defined Function Injection）</td>
+<td>建立用户定义函数</td>
+</tr>
+<tr>
+<td>访问文件系统（File System Access）</td>
+<td>访问后端数据库管理系统的底层文件系统</td>
+</tr>
+<tr>
+<td>操作系统连接（Operating System Access）</td>
+<td>连接后端DBMS底层的操作系统</td>
+</tr>
+<tr>
+<td>Windows注册表连接（Windows Registry Access）</td>
+<td>连接后端DBMS底层的Windows注册表</td>
+</tr>
+<tr>
+<td>通用（General）</td>
+<td>设置一些通用参数</td>
+</tr>
+</tbody></table>
+<h2 id="二、SQLMAP下载与安装"><a href="#二、SQLMAP下载与安装" class="headerlink" title="二、SQLMAP下载与安装"></a>二、SQLMAP下载与安装</h2><p>SQLMAP下载地址：<a target="_blank" rel="noopener" href="http://sqlmap.org/">http://sqlmap.org/</a></p>
+<p>查看SQLMAP是否安装 python3 sqlmap.py -h 如下图则已完成SQLMAP工具安装</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd8jc9neldj31240u0499.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd8jc9neldj31240u0499.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200327153430204"></p>
+<h2 id="三、SQLMAP命令练习"><a href="#三、SQLMAP命令练习" class="headerlink" title="三、SQLMAP命令练习"></a>三、SQLMAP命令练习</h2><p>命令拆解</p>
+<p><code>python sqlmap.py -u &quot;http:127.0.0.1:8999/Less-1/?id=1&quot; -user-agent=websecurity -threads=5 -p id --level --technique=E --current=user --flush-session --beep</code>  </p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdbv6gilvoj31ky0d2dn0.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdbv6gilvoj31ky0d2dn0.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200330125655149"></p>
+<p><code>python sqlmap.py -u &quot;http:127.0.0.1:8999/Less-1/?id=1&quot;</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdc2ohwy0oj31hy09e7wh.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdc2ohwy0oj31hy09e7wh.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200330171627205"></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdc2otpq97j31hq0a8b29.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdc2otpq97j31hq0a8b29.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200330171645415"></p>
+<h4 id="SQLMAP注入流程"><a href="#SQLMAP注入流程" class="headerlink" title="SQLMAP注入流程"></a>SQLMAP注入流程</h4><p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdc2q9o99qj31g10u07wh.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdc2q9o99qj31g10u07wh.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200330171807960"></p>
+<h4 id="SQLMAP注入技巧"><a href="#SQLMAP注入技巧" class="headerlink" title="SQLMAP注入技巧"></a>SQLMAP注入技巧</h4><h5 id="需要用到-的情况："><a href="#需要用到-的情况：" class="headerlink" title="需要用到*的情况："></a>需要用到<code>*</code>的情况：</h5><ol>
+<li>URL中的值，SQLMAP默认不注入，需要<code>*</code>指定</li>
+<li>JSON格式，SQLMAP会无效，需要<code>*</code>才能进行</li>
+<li>在默认Level=1时，可以使用<code>*</code>对特定的请求头做注入</li>
+</ol>
+<p>命令1：<code>python sqlmap.py -u http://127.0.0.1:8999/Less-1/?id=*1 --flush-session --batch --technique=B</code></p>
+<p>命令2：<code>python sqlmap.py -u http://127.0.0.1:8999/Less-1/?id=1* --flush-session --batch --technique=B</code></p>
+<h5 id="如果不指定user-agent时，将会带有sqlmap标记。"><a href="#如果不指定user-agent时，将会带有sqlmap标记。" class="headerlink" title="如果不指定user-agent时，将会带有sqlmap标记。"></a>如果不指定user-agent时，将会带有sqlmap标记。</h5><h5 id="prefix和suffix"><a href="#prefix和suffix" class="headerlink" title="prefix和suffix"></a>prefix和suffix</h5><p>修改Less-1源代码</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdc6s3018bj30zg0ae4ol.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdc6s3018bj30zg0ae4ol.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200330193816184"></p>
+<p>手动构造注入语句：</p>
+<p><code>http://127.0.0.1:8999/Less-1/?id=id=-4436)))) UNION ALL SELECT NULL,CONCAT(0x716b627171,current_user(),0x717a627671),NULL--+</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdc6vmr4jij31la0gcdkf.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdc6vmr4jij31la0gcdkf.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200330194140960"></p>
+<p>利用SQLMAP工具注入：</p>
+<p><code> python sqlmap.py -u http://127.0.0.1:8999/Less-1/?id=1 --flush-session --batch --technique=U</code></p>
+<p>无法得到注入点</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdc82jhdwzj30ye03agtg.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdc82jhdwzj30ye03agtg.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200330202253029"></p>
+<p>需要使用<code>--prefix</code>和<code>--suffix</code>来使得语句的闭合，保证正常的Payload注入</p>
+<blockquote>
+<p>–prefix -&gt; )))) 闭合前面的符号</p>
+<p>–suffix -&gt; –hhh 注释、闭合后面的数据</p>
+</blockquote>
+<p><code> python sqlmap.py -u http://127.0.0.1:8999/Less-1/?id=1 --flush-session --batch --technique=U --prefix=&quot;))))&quot; --suffix=&quot;-- hh&quot;</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdc883c70cj30yw0cc1kx.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdc883c70cj30yw0cc1kx.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200330202816224"></p>
+<h5 id="payload检测原理"><a href="#payload检测原理" class="headerlink" title="payload检测原理"></a>payload检测原理</h5><p>Payload中几个常用参数</p>
+<ul>
+<li>–no-cast cast() 关闭cast函数的使用</li>
+<li>–np-escape char() 关闭char() 减少载荷，加快效率</li>
+<li>–hex() 有时候字符编码问题可能会导致数据缺失，可以用hex()函数来避免</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdcastikauj326u0u0x6p.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdcastikauj326u0u0x6p.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200330215723032"></p>
+<h5 id="risk和level"><a href="#risk和level" class="headerlink" title="risk和level"></a>risk和level</h5><p>level是测试范围，risk是语句深度</p>
+<p>两者都会影响Payload的测试量，值越大，量越大。</p>
+<p>level解释：高等级level会包含低等级level的测试</p>
+<ul>
+<li>level&gt;=2时，会测试cookie</li>
+<li>level&gt;=3时，会测试user-agent，referer</li>
+<li>level&gt;=5时，会测试HOST</li>
+</ul>
+<p>risk解释：高等级risk会包含低等级risk的测试</p>
+<ul>
+<li>1 默认，会测试大部分的测试语句</li>
+<li>2 会加上基于事件的测试语句</li>
+<li>3 会增加OR语句的SQL注入测试</li>
+</ul>
+<hr>
+<h2 id="附录：SQLMAP-Wiki"><a href="#附录：SQLMAP-Wiki" class="headerlink" title="附录：SQLMAP Wiki"></a>附录：SQLMAP Wiki</h2><p>对上述提到了十二个SQLMAP功能模块，我们从实战的角度将功能重新分成Options、Target、Request、Optimization、Injection、Detection、Techniques、Fingerprint、Enumeration、Brute Force、User-defined Function Injection、File System Access、Operating System Access、Windows Registry Access、General、Miscellaneous共十六个模块来讲解。</p>
+<p>（部分参数未能理解含义，见谅。若对参数有别的见解可以联系我呀！！！）</p>
+<h4 id="3-1-Options（选项）"><a href="#3-1-Options（选项）" class="headerlink" title="3.1 Options（选项）"></a>3.1 Options（选项）</h4><table>
+<thead>
+<tr>
+<th>参数</th>
+<th align="left">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>-h-hh</strong></td>
+<td align="left"><strong>查看帮助</strong></td>
+</tr>
+<tr>
+<td>–version</td>
+<td align="left">查看版本</td>
+</tr>
+<tr>
+<td><strong>-v</strong></td>
+<td align="left"><strong>显示信息级别，共有六级：0.只显示Python错误和一些严重信息 1.显示基本信息（默认）2.显示Debug信息 3.显示注入过程的Payload 4.显示HTTP包请求 5.显示HTTP响应头 6.显示HTTP响应页面</strong></td>
+</tr>
+</tbody></table>
+<h4 id="3-2-Target（目标）"><a href="#3-2-Target（目标）" class="headerlink" title="3.2 Target（目标）"></a>3.2 Target（目标）</h4><p>这些选项可用于指定连接何种目标（数据库、URL、文件）。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-d</td>
+<td>直接连接目标后端数据库，并不使用SQL注入漏洞，通过目标端口侦听实现。需要注意的是输入目标数据库的账号与密码。例如<code>-d &quot;mysql;//username;password@127.0.01:3306/databasename&quot; --dbs</code></td>
+</tr>
+<tr>
+<td>-u</td>
+<td>指定URL连接。例如<code>-u &quot;www.implanck.com/index.php?id=1&quot;</code></td>
+</tr>
+<tr>
+<td>-l</td>
+<td>SQLMAP扫描log文件中所有记录。例如<code>-l log.txt</code></td>
+</tr>
+<tr>
+<td>-x</td>
+<td>站点地图，返回给SQL一个XML文件</td>
+</tr>
+<tr>
+<td>-m</td>
+<td>提供包含URL的TXT文件，SQLMAP会自动化检查其中所有URL。例如<code>-m target.txt</code></td>
+</tr>
+<tr>
+<td>-r</td>
+<td>提供包含POST请求方式的数据包的TXT文件，SQLMAP会通过POST方式检测目标。例如<code>-r post.txt</code></td>
+</tr>
+<tr>
+<td>-g</td>
+<td>使用Google搜索类似的网站。例如<code>-g &quot;inurl:\&quot;.php?id=1\&quot;&quot;</code></td>
+</tr>
+<tr>
+<td>-c</td>
+<td>提供命令的TXT文件，让SQLMAP执行文件中的命令。也可以配合<code>--sava</code>命令将结果写入文件。</td>
+</tr>
+</tbody></table>
+<h4 id="3-3-Request（请求）"><a href="#3-3-Request（请求）" class="headerlink" title="3.3 Request（请求）"></a>3.3 Request（请求）</h4><p>这些选项可用于指定如何连接到目标 URL。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–method=METHOD</td>
+<td>指定利用GET方法还是POST方法。例如<code>--method=GET</code>或<code>--method=POST</code></td>
+</tr>
+<tr>
+<td>–data=DATA</td>
+<td>指定后接参数（POST型）。例如<code>-u &quot;www.implanck.com/index.php&quot; --data=&quot;id=1&quot; union select 1,2,3&quot;</code></td>
+</tr>
+<tr>
+<td>–param-del=PARA</td>
+<td>指定使用的变量分隔符。例如<code>-u &quot;www.implanck.com/index.php?id=1&quot; data=&quot;name=1;pass=2&quot; --para-del=&quot;;&quot;</code></td>
+</tr>
+<tr>
+<td>–cookie=COOKIE</td>
+<td>指定使用的cookie。例如<code>-u &quot;www.implanck.com/index.php?id=1&quot; --cookie=&quot;a=1;b=2&quot;</code></td>
+</tr>
+<tr>
+<td>–cookie-del=COO..</td>
+<td>与–param-del=PARA类似，不再赘述。</td>
+</tr>
+<tr>
+<td>–load-cookies=L..</td>
+<td>从Netscape/wget格式的cookie文件中加载cookie</td>
+</tr>
+<tr>
+<td>–drop-set-cookie</td>
+<td>SQLMAP默认开启set-cookie功能（当收到一条含有set-cookie的HTTP包时，下次SQL会使用新的cookie进行发包）。如果使用这条命令则关闭此功能。</td>
+</tr>
+<tr>
+<td>–user-agent=AGENT</td>
+<td>指定user-agent值测试。SQLMAP默认会使用自己的user-agent值（SQLMAP自身user-agent为<code>sqlmap/1.0-dev-nongit-201603020a89(http://sqlmap.org)</code>）进行测试。例如<code>--user-agent=&quot;aaaaaa&quot;</code></td>
+</tr>
+<tr>
+<td>–random-agent</td>
+<td>使用随机user-agent值测试。可在sqlmap/data/txt/user-agents.txt中查看。</td>
+</tr>
+<tr>
+<td>–host=HOST</td>
+<td>指定HTTP包中的HOST头参数。例如<code>--host=&quot;aaaaa&quot;</code></td>
+</tr>
+<tr>
+<td>–referer=REFERER</td>
+<td>指定HTTP包中的referer字段。例如<code>--referer=&quot;aaaaa&quot;</code></td>
+</tr>
+<tr>
+<td>-H –headers</td>
+<td>额外的headers头。例如<code>--headers=&quot;www.implanck.com\nUser-Agent:planck&quot;</code></td>
+</tr>
+<tr>
+<td>–headers=HEADERS</td>
+<td>同上面(注意构造HTTP包区分大小写)。另一个例子<code>--headers=&quot;Accept-Language:fr\nTag:213&quot;</code></td>
+</tr>
+<tr>
+<td>–auth-type=AUTH..</td>
+<td>基于HTTP身份验证的种类（共有三种认证方式）。例如<code>--auth-type Basic.Digest/NTLM</code></td>
+</tr>
+<tr>
+<td>–auth-cred=AUTH..</td>
+<td>使用认证。例如<code>--auth-type Basic --auth-cred &quot;user:password&quot;</code></td>
+</tr>
+<tr>
+<td>–auth-file=AUTH..</td>
+<td>使用.PEM文件认证。例如<code>--auth-file=&quot;AU.PEM&quot;</code></td>
+</tr>
+<tr>
+<td>–ignore-code=IG..</td>
+<td>无视响应HTTP状态码。例如<code>--ignore-code=401</code></td>
+</tr>
+<tr>
+<td>–ignore-proxy</td>
+<td>无视本地设置的代码。</td>
+</tr>
+<tr>
+<td>–ignore-redirects</td>
+<td>无视HTTP重定向（状态码为3XX类型）。可以使用这个忽略登录成功会跳转到其他网页。</td>
+</tr>
+<tr>
+<td>–ignore-timeouts</td>
+<td>无视连接超时</td>
+</tr>
+<tr>
+<td><strong>–proxy=PROXY</strong></td>
+<td>设置代理。方便BurpSuite抓包。例如<code>--proxy=&quot;127.0.0.1:8080&quot;</code></td>
+</tr>
+<tr>
+<td>–proxy-cred=PRO..</td>
+<td>代理需要认证。例如<code>--proxy=&quot;name:password&quot;</code></td>
+</tr>
+<tr>
+<td>–proxy-file=PRO..</td>
+<td>使用文件加载代理</td>
+</tr>
+<tr>
+<td>–tor</td>
+<td>可用来屏蔽一个互联网用户的IP地址，允许匿名浏览。</td>
+</tr>
+<tr>
+<td>–tor-port=TORPORT</td>
+<td>设置默认的匿名浏览端口</td>
+</tr>
+<tr>
+<td>–tor-type=TORTYPE</td>
+<td>设置匿名浏览代理种类</td>
+</tr>
+<tr>
+<td>–check-tor</td>
+<td>检查是否正确使用匿名浏览</td>
+</tr>
+<tr>
+<td>–delay=DELAY</td>
+<td>每次发包的延时时间，单位为秒。例如<code>--delay 2.5</code></td>
+</tr>
+<tr>
+<td>–timeout=TIMEOUT</td>
+<td>设置请求超时时间，默认为30秒</td>
+</tr>
+<tr>
+<td>–retries=RETRIES</td>
+<td>设置超时重连次数，默认为3。例如<code>--retries=5</code></td>
+</tr>
+<tr>
+<td>–randomize=RPARAM</td>
+<td>设置随机参数长度（保证类型与输入值一致的情况下）。为了避免反复提交同一个参数引起服务器怀疑。</td>
+</tr>
+<tr>
+<td>–safe-url=SAFEURL</td>
+<td>与<code>-u</code>类似，额外功能是防止长时间不通讯服务器销毁session，开启这种功能会隔一段时间发一个包保持session</td>
+</tr>
+<tr>
+<td>–safe-post=SAFE..</td>
+<td>同上。以POST形式发送</td>
+</tr>
+<tr>
+<td>–safe-req=SAFER..</td>
+<td>同上。从一个文件获取目标</td>
+</tr>
+<tr>
+<td>–safe-freq=SAFE..</td>
+<td>频繁发送错误请求，服务器会销毁session。开启此参数后，发几次错误的就会有发一次对的。适用于盲注</td>
+</tr>
+<tr>
+<td>–skip-urlencode</td>
+<td>跳过URL编码。（有些网站URL不遵守RFC标准编码）</td>
+</tr>
+<tr>
+<td>–csrf-token=CSR..</td>
+<td>保持CSRF令牌的token</td>
+</tr>
+<tr>
+<td>–csrf-url=CSRFURL</td>
+<td>访问URL地址时获取CSRF的token</td>
+</tr>
+<tr>
+<td>–force-ssl</td>
+<td>强制使用SSL</td>
+</tr>
+<tr>
+<td>–hpp</td>
+<td></td>
+</tr>
+<tr>
+<td>–eval=EVALCODE</td>
+<td>指定执行一段Python代码。例如<code>-u &quot;www.test.com/index.php?id=1&quot; -eval=&quot;import hashlib;hash=hashlib.md5(id).hexdigest()&quot;</code></td>
+</tr>
+</tbody></table>
+<h4 id="3-4-Optimization（优化）"><a href="#3-4-Optimization（优化）" class="headerlink" title="3.4 Optimization（优化）"></a>3.4 Optimization（优化）</h4><p>这些选项可用于优化SQLMAP的性能。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-o</td>
+<td>开启<code>--predict-output</code>、<code>--keep-alive</code>、<code>--null-connection</code>功能</td>
+</tr>
+<tr>
+<td>–predict-output</td>
+<td>根据服务器返回值来猜测一个数据表存不存在。（与暴力破解不同的是在一个范围内慢慢缩小暴力破解范围）</td>
+</tr>
+<tr>
+<td>–keep-alive</td>
+<td>使用HTTP长链接，<strong>优点：</strong>性能更好，避免重复建立链接的开销；<strong>缺点：</strong>占用服务器资源。（注意：与–proxy不兼容）</td>
+</tr>
+<tr>
+<td>–null-connection</td>
+<td>分析返回报文页面的Length值，通常用于（时间延迟&amp;布尔）盲注。</td>
+</tr>
+<tr>
+<td>–threads=THREADS</td>
+<td>开启多线程，线程数为1-10。（注意：与–predict-output不兼容）</td>
+</tr>
+</tbody></table>
+<h4 id="3-5-Injection（注入）"><a href="#3-5-Injection（注入）" class="headerlink" title="3.5 Injection（注入）"></a>3.5 Injection（注入）</h4><p>这些选项可用于指定需要测试的参数，并提供自定义注入脚本和可选的篡改脚本。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-p TESTPARAMETER</td>
+<td>指定测试的参数（使用此参数会使得<code>--level</code>参数无效）。例如<code>-p &quot;user-agent,referer&quot;</code></td>
+</tr>
+<tr>
+<td>–skip=SKIP</td>
+<td>排除指定的参数。例如<code>--level 5 --skip=&quot;id,user-agent&quot;</code></td>
+</tr>
+<tr>
+<td>–skip-static</td>
+<td>跳过测试静态参数</td>
+</tr>
+<tr>
+<td>–param-exclude=..</td>
+<td>使用正则表达式跳过测试参数</td>
+</tr>
+<tr>
+<td>–dbms=DBMS</td>
+<td>指定目标数据库类型。例如<code>--dbms=&quot;MySQL&lt;5.0&gt;/Oracle&lt;lli&gt;/Microsoft SQL Server&lt;2005&gt;&quot;</code></td>
+</tr>
+<tr>
+<td>–dbms-cred=DBMS..</td>
+<td>数据库的登录认证。例如<code>--dbms-cred=&quot;name:passwd&quot;</code></td>
+</tr>
+<tr>
+<td>–os=OS</td>
+<td>指定目标操作系统。例如<code>--os=&quot;Linux/Windows&quot;</code></td>
+</tr>
+<tr>
+<td>–invalid-bignum</td>
+<td>通常情况下SQLMAP使用负值使得参数失效（id=-1）。开启这条参数后使用大数来失效（id=9999999999）。</td>
+</tr>
+<tr>
+<td>–invalid-logical</td>
+<td>利用逻辑运算符使得参数失效。例如id=1 and 1=2（and后面失效）</td>
+</tr>
+<tr>
+<td>–invalid-string</td>
+<td>利用随机字符串使得参数失效</td>
+</tr>
+<tr>
+<td>–no-cast</td>
+<td>获取数据时，SQLMAP将所有数据转换成字符串（空格使用NuLL代替）。</td>
+</tr>
+<tr>
+<td>–no-escape</td>
+<td>用于混淆和避免出错（单引号可能会被过滤机制拦截），SQLMAP使用char()编码。例如<code>select &quot;a&quot;</code>–&gt;<code>select char(97)</code></td>
+</tr>
+<tr>
+<td>–prefix=PREFIX</td>
+<td>指定Payload前缀（有时候我们猜到了服务器代码闭合情况，需要使用这个来指定）。例如<code>-u &quot;www.implanck/com/index.php?id=1&quot; -p id --prefix&quot;)&quot; --suffix &quot;and (&#39;abc&#39;=&#39;abc&quot;</code></td>
+</tr>
+<tr>
+<td>–suffix=SUFFIX</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>–tamper=TAMPER</td>
+<td>使用SQLMAP自带的tamper，或者自己写的tamper，来混淆Payload。通常用来绕过WAF和IPS。</td>
+</tr>
+</tbody></table>
+<h4 id="3-6-Detection（侦测）"><a href="#3-6-Detection（侦测）" class="headerlink" title="3.6 Detection（侦测）"></a>3.6 Detection（侦测）</h4><p>这些选项可用于在侦测阶段时的自定义内容。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–level=LEVEL</td>
+<td>设置测试等级（1-5，默认为1） lv2:cookie; lv3:user-agent,referer; lv5:host。具体的Payload可以在sqlmap/data/xml/payloads文件夹里查看。</td>
+</tr>
+<tr>
+<td>–risk=RISK</td>
+<td>风险（1-4，默认为1）升高风险等级会增加数据被篡改的风向 risk2:基于事件的测试 ；risk3:or语句的测试 ；risk4:update的测试</td>
+</tr>
+<tr>
+<td>–string=STRING</td>
+<td>指定字符串参数为判断结果真。（在基于布尔注入中，有时候返回的页面一次一个样，需要我们自己判断返回正确页面的标志，于是就设置返回正确页面的字符串）</td>
+</tr>
+<tr>
+<td>–not-string=NOT..</td>
+<td>同上。指定NULL为真。</td>
+</tr>
+<tr>
+<td>–regexp=REGEXP</td>
+<td>同上。指定正则表达式来判断。</td>
+</tr>
+<tr>
+<td>–code=CODE</td>
+<td>指定HTTP返回码为判断结果真</td>
+</tr>
+<tr>
+<td>–text-only</td>
+<td>指定页面内一段文本内容为判断结果真</td>
+</tr>
+<tr>
+<td>–titles</td>
+<td>指定页面标题为判断结果真</td>
+</tr>
+</tbody></table>
+<h4 id="3-7-Techniques（技巧）"><a href="#3-7-Techniques（技巧）" class="headerlink" title="3.7 Techniques（技巧）"></a>3.7 Techniques（技巧）</h4><p>这些选项可用于选取特定 SQL 注入技术。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–technique=TECH</td>
+<td>指定所使用的技术（B：布尔盲注、E：报错注入、U：联合查询注入、S：文件系统，操作系统，注册表相关注入、T：时间延时盲注。默认全部使用）</td>
+</tr>
+<tr>
+<td>–time-sec=TIMESEC</td>
+<td>在基于时间延迟盲注时，指定判断时间，默认5秒（单位为秒）</td>
+</tr>
+<tr>
+<td>–union-cols=UCOLS</td>
+<td>联合查询尝试列数。（类似于ORDER BY x），随着level增加，最多支持50列。例如<code>--union-cols 6-9</code></td>
+</tr>
+<tr>
+<td>–union-char=UCHAR</td>
+<td>联合查询默认使用的站列的是NULL，有的时候NULL可能会失效，因此可以手动指定其他字符。例如<code>--union-char 1</code></td>
+</tr>
+<tr>
+<td>–union-from=UFROM</td>
+<td>联合查询从之前的查询结果中选择列</td>
+</tr>
+<tr>
+<td>–dns-domain=DNS..</td>
+<td>指定DNS服务器来提升效率。例如<code>--dns-domain abc.com</code></td>
+</tr>
+<tr>
+<td></td>
+<td>在某个页面注入的结果在另一个页面展示。例如<code>--second-order www.implanck.com/a.php</code></td>
+</tr>
+</tbody></table>
+<h4 id="3-8-Fingerprint（指纹）"><a href="#3-8-Fingerprint（指纹）" class="headerlink" title="3.8 Fingerprint（指纹）"></a>3.8 Fingerprint（指纹）</h4><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-f, –fingerprint</td>
+<td>指纹信息，返回DBMS，操作系统，架构，补丁等信息</td>
+</tr>
+</tbody></table>
+<h4 id="3-9-Enumeration（枚举）"><a href="#3-9-Enumeration（枚举）" class="headerlink" title="3.9 Enumeration（枚举）"></a>3.9 Enumeration（枚举）</h4><p>这些选项可用于枚举表中后端数据库管理系统信息、结构和数据。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-a, –all</td>
+<td>暴力查找全部</td>
+</tr>
+<tr>
+<td>-b, –banner</td>
+<td>返回数据库管理系统的标识</td>
+</tr>
+<tr>
+<td>–current-user</td>
+<td>返回当前用户</td>
+</tr>
+<tr>
+<td>–current-db</td>
+<td>返回当前数据库</td>
+</tr>
+<tr>
+<td>–hostname</td>
+<td>返回主机名</td>
+</tr>
+<tr>
+<td>–is-dba</td>
+<td>检测 DBMS 当前用户是否为 DBA（数据库管理员）</td>
+</tr>
+<tr>
+<td>–users</td>
+<td>返回所用用户名</td>
+</tr>
+<tr>
+<td>–passwords</td>
+<td>返回用户密码的哈希值</td>
+</tr>
+<tr>
+<td>–privilege</td>
+<td>列举当前用户的权限（通过用户权限可以判断是否为管理员）。例如<code>--privileges U root</code></td>
+</tr>
+<tr>
+<td>–roles</td>
+<td>列举当前用户权限</td>
+</tr>
+<tr>
+<td>–dbs</td>
+<td>返回目标服务器中数据库信息</td>
+</tr>
+<tr>
+<td>–tables</td>
+<td>返回目标数据库中数据表信息</td>
+</tr>
+<tr>
+<td>–columns</td>
+<td>返回目标数据表中列字段信息</td>
+</tr>
+<tr>
+<td>–schema</td>
+<td>返回目标服务器中所有（数据库、数据表、列字段）信息</td>
+</tr>
+<tr>
+<td>–count</td>
+<td>返回查询结果的个数</td>
+</tr>
+<tr>
+<td>–dump</td>
+<td>返回指定范围的所有信息。例如<code>-D security -T users --dump</code></td>
+</tr>
+<tr>
+<td>–dump-all</td>
+<td>返回所有信息。</td>
+</tr>
+<tr>
+<td>–search</td>
+<td>搜索数据库、数据表和列字段的名称</td>
+</tr>
+<tr>
+<td>–comments</td>
+<td>检索数据库的备注</td>
+</tr>
+<tr>
+<td>-D DB</td>
+<td>查询指定某个数据库数据</td>
+</tr>
+<tr>
+<td>-T TBL</td>
+<td>查询指定某个数据表数据</td>
+</tr>
+<tr>
+<td>-C COL</td>
+<td>查询指定某个列字段数据</td>
+</tr>
+<tr>
+<td>-X EXCLUDE</td>
+<td>指定数据库的标识符</td>
+</tr>
+<tr>
+<td>-U USER</td>
+<td>指定用户（通常与其他参数联合使用）</td>
+</tr>
+<tr>
+<td>–exclude-sysdbs</td>
+<td>排除系统数据库</td>
+</tr>
+<tr>
+<td>–pivot-column=P..</td>
+<td></td>
+</tr>
+<tr>
+<td>–where=DUMPWHERE</td>
+<td>在dump时使用where条件限制</td>
+</tr>
+<tr>
+<td>–start=LIMITSTART</td>
+<td></td>
+</tr>
+<tr>
+<td>–stop=LIMITSTOP</td>
+<td></td>
+</tr>
+<tr>
+<td>–first=FIRSTCHAR</td>
+<td></td>
+</tr>
+<tr>
+<td>–last=LASTCHAR</td>
+<td></td>
+</tr>
+<tr>
+<td>–sql-query=QUERY</td>
+<td>执行SQL语句</td>
+</tr>
+<tr>
+<td>–sql-shell</td>
+<td>创建一个SQL的shell</td>
+</tr>
+<tr>
+<td>–sql-file=SQLFILE</td>
+<td>执行给定文件中的SQL语句</td>
+</tr>
+</tbody></table>
+<h4 id="3-10-Brute-Force（暴力执行）"><a href="#3-10-Brute-Force（暴力执行）" class="headerlink" title="3.10 Brute Force（暴力执行）"></a>3.10 Brute Force（暴力执行）</h4><p>这些选项可用于暴力检查。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–common-tables</td>
+<td>检查整个数据库中有没有记录信息的数据库/表。（在MySQL&gt;=5.0时，名为information_schema的数据表，存储了整个数据库的基本信息）</td>
+</tr>
+<tr>
+<td>–common-columns</td>
+<td>检查整个数据库中有没有记录列字段信息的公共表。</td>
+</tr>
+</tbody></table>
+<h4 id="3-11-User-defined-Function-Injection（用户定义注入函数）"><a href="#3-11-User-defined-Function-Injection（用户定义注入函数）" class="headerlink" title="3.11 User-defined Function Injection（用户定义注入函数）"></a>3.11 User-defined Function Injection（用户定义注入函数）</h4><p>这些选项可用于用户定义注入函数。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–udf-inject</td>
+<td></td>
+</tr>
+<tr>
+<td>–shared-lib=SHLIB</td>
+<td></td>
+</tr>
+</tbody></table>
+<h4 id="3-12-File-System-Access（访问文件系统）"><a href="#3-12-File-System-Access（访问文件系统）" class="headerlink" title="3.12 File System Access（访问文件系统）"></a>3.12 File System Access（访问文件系统）</h4><p>这些选项可用于访问后端数据库管理系统的文件系统。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–file-read=RFILE</td>
+<td>读取目标站点的文件。例如<code>--file-read=&quot;/etc/password&quot;</code></td>
+</tr>
+<tr>
+<td>–file-write=WFILE</td>
+<td>写入目标站点的文件（通常与–sql-query联合使用，使用相对路径）。例如<code>--sql-query=&quot;select &quot;一句话木马&quot; --file-write=&quot;shell.php&quot;</code></td>
+</tr>
+<tr>
+<td>–file-dest=DFILE</td>
+<td>同上。使用绝对路径。</td>
+</tr>
+</tbody></table>
+<h4 id="3-13-Operating-System-Access（操作系统连接）"><a href="#3-13-Operating-System-Access（操作系统连接）" class="headerlink" title="3.13 Operating System Access（操作系统连接）"></a>3.13 Operating System Access（操作系统连接）</h4><p>这些选项可用于访问底层操作系统的后端数据库管理系统。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–os-cmd=OSCMD</td>
+<td>执行系统命令。例如<code>--os-shell=&quot;ipconfig -all&quot;</code></td>
+</tr>
+<tr>
+<td>–os-shell</td>
+<td>执行远程系统命令（在目标站点操作系统上的Shell）</td>
+</tr>
+<tr>
+<td>–os-pwn</td>
+<td>同上。获取一个OOB shell、meterpreter、VNC。</td>
+</tr>
+<tr>
+<td>–os-smbrelay</td>
+<td>同上。一键获取获取一个OOB shell、meterpreter、VNC。</td>
+</tr>
+<tr>
+<td>–os-bof</td>
+<td>利用缓冲区溢出。</td>
+</tr>
+<tr>
+<td>–priv-esc</td>
+<td>自动提权。</td>
+</tr>
+<tr>
+<td>–msf-path=MSFPATH</td>
+<td>查看Metasploit Framework本地的安装路径。</td>
+</tr>
+<tr>
+<td>–tmp-path=TMPPATH</td>
+<td>远程临时文件目录的绝对路径</td>
+</tr>
+</tbody></table>
+<h4 id="3-14-Windows-Registry-Access（Windows注册表连接）"><a href="#3-14-Windows-Registry-Access（Windows注册表连接）" class="headerlink" title="3.14 Windows Registry Access（Windows注册表连接）"></a>3.14 Windows Registry Access（Windows注册表连接）</h4><p>这些选项可用于访问后端数据库管理系统的Windows注册表。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–reg-read</td>
+<td>读取一个Windows注册表</td>
+</tr>
+<tr>
+<td>–reg-add</td>
+<td>添加一个Windows注册表</td>
+</tr>
+<tr>
+<td>–reg-del</td>
+<td>删除一个Windows注册表</td>
+</tr>
+<tr>
+<td>–reg-key=REGKEY</td>
+<td>与–reg-add连用，注册表key值</td>
+</tr>
+<tr>
+<td>–reg-value=REGVAL</td>
+<td>与–reg-add连用，注册表值</td>
+</tr>
+<tr>
+<td>–reg-data=REGDATA</td>
+<td>与–reg-add连用，注册表数据</td>
+</tr>
+<tr>
+<td>–reg-type=REGTYPE</td>
+<td>与–reg-add连用，注册表类别</td>
+</tr>
+</tbody></table>
+<h4 id="3-15-General（通用）"><a href="#3-15-General（通用）" class="headerlink" title="3.15 General（通用）"></a>3.15 General（通用）</h4><p>这些选项可用于设置一些常规的测试参数。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-s SESSIONFILE</td>
+<td>从一个文件加载保存的session</td>
+</tr>
+<tr>
+<td>-t TRAFFICFILE</td>
+<td>记录流文件的保存位置</td>
+</tr>
+<tr>
+<td><strong>–batch</strong></td>
+<td><strong>批处理。在检测过程中有一些咨询问题，使用默认值答复。</strong></td>
+</tr>
+<tr>
+<td>–binary-fields=..</td>
+<td>指定二进制结果的字段</td>
+</tr>
+<tr>
+<td>–check-internet</td>
+<td>在评估目标之前检查互联网连接</td>
+</tr>
+<tr>
+<td>–crawl=CRAWLDEPTH</td>
+<td>初始位置爬虫的深度。例如<code>--crawl=3</code></td>
+</tr>
+<tr>
+<td>–crawl-exclude=..</td>
+<td>全部页面爬取除了…。例如<code>--crawl-exclude=&quot;test.com/logout.php&quot;</code></td>
+</tr>
+<tr>
+<td>–csv-del=CSVDEL</td>
+<td>指定在CSV输出中使用的分隔字符</td>
+</tr>
+<tr>
+<td>–charset=CHARSET</td>
+<td>强制字符串编码。例如<code>--charset=gbk</code></td>
+</tr>
+<tr>
+<td>–dump-format=DU..</td>
+<td>转存数据的格式。（默认CSV、HTML、SQLITE三种格式）</td>
+</tr>
+<tr>
+<td>–encoding=ENCOD..</td>
+<td>用于数据检索的字符编码。</td>
+</tr>
+<tr>
+<td>–eta</td>
+<td>显示每个输出的预计到达时间</td>
+</tr>
+<tr>
+<td><strong>–flush-session</strong></td>
+<td><strong>清空会话信息</strong></td>
+</tr>
+<tr>
+<td>–forms</td>
+<td>在目标URL上解析和测试表单</td>
+</tr>
+<tr>
+<td><strong>–fresh-queries</strong></td>
+<td><strong>SQLMAP每次将查询结果存在.sqlmap文件夹中，若下次有相同的查询则直接调用上次的结果。使用这个参数忽略之前查询结果</strong></td>
+</tr>
+<tr>
+<td>–har=HARFILE</td>
+<td>将HTTP流量记录在一个HAR文件</td>
+</tr>
+<tr>
+<td>–hex</td>
+<td>DUMP非ASCII字符时，将其编码为16进制，收到后解码环境。</td>
+</tr>
+<tr>
+<td>–output-dir=OUT..</td>
+<td>输出结果至文件。例如<code>--ouput-dir=/tmp</code></td>
+</tr>
+<tr>
+<td>–parse-errors</td>
+<td>解析并显示报错文件</td>
+</tr>
+<tr>
+<td>–save=SAVECONFIG</td>
+<td>过滤信息</td>
+</tr>
+<tr>
+<td>–scope=SCOPE</td>
+<td></td>
+</tr>
+<tr>
+<td>–test-filter=TE..</td>
+<td></td>
+</tr>
+<tr>
+<td>–test-skip=TEST..</td>
+<td></td>
+</tr>
+<tr>
+<td>–update</td>
+<td>检查更新SQLMAP</td>
+</tr>
+</tbody></table>
+<h4 id="3-16-Miscellaneous（杂项）"><a href="#3-16-Miscellaneous（杂项）" class="headerlink" title="3.16 Miscellaneous（杂项）"></a>3.16 Miscellaneous（杂项）</h4><p>这些选项可用于不适合上述任何类别的一些杂项。</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-z MNEMONICS</td>
+<td>参数助记符，类似于alias。例如<code>-z &quot;abc&quot;</code></td>
+</tr>
+<tr>
+<td>–alert=ALERT</td>
+<td>找到SQL注入时运行主机OS命令。</td>
+</tr>
+<tr>
+<td>–answers=ANSWERS</td>
+<td>设置问题答案。在<code>--batch</code>选择的是默认值，可以使用参数对特定问题设定特定答案。例如<code>--answer &quot;extending=N&quot;</code>。</td>
+</tr>
+<tr>
+<td>–beep</td>
+<td>在SQL注入被发现时发出嘟嘟声。</td>
+</tr>
+<tr>
+<td>–cleanup</td>
+<td>从SQLMAP特定的UDF和表中找数据库。（暴力破解）</td>
+</tr>
+<tr>
+<td>–dependencies</td>
+<td>检查缺少的SQL映射依赖项。</td>
+</tr>
+<tr>
+<td>–disable-coloring</td>
+<td>禁止输出着色。</td>
+</tr>
+<tr>
+<td>–gpage=GOOGLEPAGE</td>
+<td></td>
+</tr>
+<tr>
+<td>–identify-waf</td>
+<td>识别目标的WAF机制</td>
+</tr>
+<tr>
+<td>–mobile</td>
+<td>模拟手机</td>
+</tr>
+<tr>
+<td>–offline</td>
+<td>离线运行</td>
+</tr>
+<tr>
+<td><strong>–purge-output</strong></td>
+<td><strong>删除所有保存的数据文件夹</strong></td>
+</tr>
+<tr>
+<td>–skip-waf</td>
+<td>跳过WAF/IPS/IDS保护的启发式检测</td>
+</tr>
+<tr>
+<td>–smart</td>
+<td>当有大量检测目标时，只选择基于错误的检测</td>
+</tr>
+<tr>
+<td>–sqlmap-shell</td>
+<td>打开交互式的SQLMAP-Shell</td>
+</tr>
+<tr>
+<td>–tmp-dir=TMPDIR</td>
+<td>更改临时存储文件的本地目录</td>
+</tr>
+<tr>
+<td>–web-root=WEBROOT</td>
+<td>设置Web服务器文档根目录。例如<code>--web-root=&quot;/var/www&quot;</code></td>
+</tr>
+<tr>
+<td>–wizard</td>
+<td>新手教程（挺有趣）</td>
+</tr>
+</tbody></table>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2>
+  
+  
+    
+    <div class='footer'>
+      
+      
+      
+        <div class='copyright'>
+          <blockquote>
+            
+              
+                <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+              
+            
+              
+                <p>本文永久链接是：<a href=http://example.com/2020/03/30/SQLMAP%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/>http://example.com/2020/03/30/SQLMAP%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</a></p>
+              
+            
+          </blockquote>
+        </div>
+      
+      
+    </div>
+  
+  
+    
+
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-03T15:19:42+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Apr 3, 2020</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/SQLMAP/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>SQLMAP</p></a></div>
+
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://example.com/2020/03/30/SQLMAP%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/&title=SQLMAP不完全使用手册 - Hexo&summary=本文学习SQLMAP工具的使用。以及附录的SQLMAP参数百科全书。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://example.com/2020/03/30/SQLMAP%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/&title=SQLMAP不完全使用手册 - Hexo&summary=本文学习SQLMAP工具的使用。以及附录的SQLMAP参数百科全书。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://example.com/2020/03/30/SQLMAP%E4%B8%8D%E5%AE%8C%E5%85%A8%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/&title=SQLMAP不完全使用手册 - Hexo&summary=本文学习SQLMAP工具的使用。以及附录的SQLMAP参数百科全书。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </div>
+
+
+  
+  
+
+  
+    <div class="prev-next">
+      
+        <a class='prev' href='/2020/04/07/HTTP%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/'>
+          <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>HTTP协议简介</p>
+          <p class='content'>本文学习如何HTTP如何在客户端与服务器端通信，以及HTTP方法。
+
+
+HTTP协议在客户端和服务端之间的通信客户端：请求访问文本或图像等资源的一端。服务器端：提供资源响应的一端。
+
+注意：就一...</p>
+        </a>
+      
+      
+        <a class='next' href='/2020/03/30/%E6%B5%8B%E8%AF%95/'>
+          <p class='title'>测试<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>包括音乐框、建站时长、阅读时长。。。。懒得写qwq
+</p>
+        </a>
+      
+    </div>
+  
+</article>
+
+
+  
+
+  <article class="post white-box reveal shadow" id="comments">
+    <p ct><i class='fas fa-comments'></i> 评论</p>
+    
+    <div id="valine_container" class="valine_thread">
+  <i class="fas fa-cog fa-spin fa-fw fa-2x"></i>
+</div>
+
+  </article>
+
+
+
+
+
+
+</div>
+<aside class='l_side'>
+  
+  
+    
+    
+
+
+
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81SQLMAP%E4%BB%8B%E7%BB%8D"><span class="toc-text">一、SQLMAP介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81SQLMAP%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85"><span class="toc-text">二、SQLMAP下载与安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81SQLMAP%E5%91%BD%E4%BB%A4%E7%BB%83%E4%B9%A0"><span class="toc-text">三、SQLMAP命令练习</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SQLMAP%E6%B3%A8%E5%85%A5%E6%B5%81%E7%A8%8B"><span class="toc-text">SQLMAP注入流程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SQLMAP%E6%B3%A8%E5%85%A5%E6%8A%80%E5%B7%A7"><span class="toc-text">SQLMAP注入技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%9C%80%E8%A6%81%E7%94%A8%E5%88%B0-%E7%9A%84%E6%83%85%E5%86%B5%EF%BC%9A"><span class="toc-text">需要用到*的情况：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E4%B8%8D%E6%8C%87%E5%AE%9Auser-agent%E6%97%B6%EF%BC%8C%E5%B0%86%E4%BC%9A%E5%B8%A6%E6%9C%89sqlmap%E6%A0%87%E8%AE%B0%E3%80%82"><span class="toc-text">如果不指定user-agent时，将会带有sqlmap标记。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#prefix%E5%92%8Csuffix"><span class="toc-text">prefix和suffix</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#payload%E6%A3%80%E6%B5%8B%E5%8E%9F%E7%90%86"><span class="toc-text">payload检测原理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#risk%E5%92%8Clevel"><span class="toc-text">risk和level</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95%EF%BC%9ASQLMAP-Wiki"><span class="toc-text">附录：SQLMAP Wiki</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-Options%EF%BC%88%E9%80%89%E9%A1%B9%EF%BC%89"><span class="toc-text">3.1 Options（选项）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-Target%EF%BC%88%E7%9B%AE%E6%A0%87%EF%BC%89"><span class="toc-text">3.2 Target（目标）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-Request%EF%BC%88%E8%AF%B7%E6%B1%82%EF%BC%89"><span class="toc-text">3.3 Request（请求）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-Optimization%EF%BC%88%E4%BC%98%E5%8C%96%EF%BC%89"><span class="toc-text">3.4 Optimization（优化）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5-Injection%EF%BC%88%E6%B3%A8%E5%85%A5%EF%BC%89"><span class="toc-text">3.5 Injection（注入）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-6-Detection%EF%BC%88%E4%BE%A6%E6%B5%8B%EF%BC%89"><span class="toc-text">3.6 Detection（侦测）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-7-Techniques%EF%BC%88%E6%8A%80%E5%B7%A7%EF%BC%89"><span class="toc-text">3.7 Techniques（技巧）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-8-Fingerprint%EF%BC%88%E6%8C%87%E7%BA%B9%EF%BC%89"><span class="toc-text">3.8 Fingerprint（指纹）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-9-Enumeration%EF%BC%88%E6%9E%9A%E4%B8%BE%EF%BC%89"><span class="toc-text">3.9 Enumeration（枚举）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-10-Brute-Force%EF%BC%88%E6%9A%B4%E5%8A%9B%E6%89%A7%E8%A1%8C%EF%BC%89"><span class="toc-text">3.10 Brute Force（暴力执行）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-11-User-defined-Function-Injection%EF%BC%88%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E6%B3%A8%E5%85%A5%E5%87%BD%E6%95%B0%EF%BC%89"><span class="toc-text">3.11 User-defined Function Injection（用户定义注入函数）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-12-File-System-Access%EF%BC%88%E8%AE%BF%E9%97%AE%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%EF%BC%89"><span class="toc-text">3.12 File System Access（访问文件系统）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-13-Operating-System-Access%EF%BC%88%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%BF%9E%E6%8E%A5%EF%BC%89"><span class="toc-text">3.13 Operating System Access（操作系统连接）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-14-Windows-Registry-Access%EF%BC%88Windows%E6%B3%A8%E5%86%8C%E8%A1%A8%E8%BF%9E%E6%8E%A5%EF%BC%89"><span class="toc-text">3.14 Windows Registry Access（Windows注册表连接）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-15-General%EF%BC%88%E9%80%9A%E7%94%A8%EF%BC%89"><span class="toc-text">3.15 General（通用）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-16-Miscellaneous%EF%BC%88%E6%9D%82%E9%A1%B9%EF%BC%89"><span class="toc-text">3.16 Miscellaneous（杂项）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-text"></span></a></li></ol>
+    </div>
+  </section>
+
+
+  
+
+
+</aside>
+
+
+
+		  
+		  <!--此文件用来存放一些不方便取值的变量-->
+<!--思路大概是将值藏到重加载的区域内-->
+
+<script>
+  window.pdata={}
+  pdata.ispage=true;
+  pdata.postTitle="SQLMAP不完全使用手册";
+  pdata.commentPath="";
+  pdata.commentPlaceholder="";
+  // header 这里无论是否开启pjax都需要
+  var l_header=document.getElementById("l_header");
+  
+  l_header.classList.add("show");
+  
+  
+    // cover
+    var cover_wrapper=document.querySelector('.cover-wrapper');
+    
+    cover_wrapper.id="none";
+    cover_wrapper.style.display="none";
+    
+  
+</script>
+
+        </div>
+        
+  
+  <footer class="footer clearfix">
+    <br><br>
+    
+      
+        <div class="aplayer-container">
+          
+
+
+        </div>
+      
+    
+      
+        <br>
+        <div class="social-wrapper">
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      
+    
+      
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
+</div>
+      
+    
+      
+        
+          <div><p><span id="lc-sv">本站总访问量为 <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span> 次</span> <span id="lc-uv">访客数为 <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span> 人</span></p>
+</div>
+        
+      
+    
+      
+        Use
+        <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
+        as theme
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="/">Copyright © 2017-2020 XXX</a></p>
+
+        </div>
+      
+    
+  </footer>
+
+
+        <a id="s-top" class="fas fa-arrow-up fa-fw" href="javascript:void(0)"></a>
+      </div>
+    </div>
+    <div>
+      <script>
+/************这个文件存放不需要重载的全局变量和全局函数*********/
+window.volantis={};
+window.volantis.loadcss=document.getElementById("loadcss");
+/******************** Pjax ********************************/
+function VPjax(){
+	this.list=[] // 存放回调函数
+	this.start=()=>{
+	  for(var i=0;i<this.list.length;i++){
+		this.list[i].run();
+	  }
+	}
+	this.push=(fn,name)=>{
+		var f=new PjaxItem(fn,name);
+		this.list.push(f);
+	}
+	// 构造一个可以run的对象
+	function PjaxItem(fn,name){
+		// 函数名称
+		this.name = name || fn.name
+		// run方法
+		this.run=()=>{
+			fn()
+		}
+	}
+}
+volantis.pjax={}
+volantis.pjax.method={
+	complete: new VPjax(),
+	error: new VPjax(),
+	send: new VPjax()
+}
+volantis.pjax={
+	...volantis.pjax,
+	push: volantis.pjax.method.complete.push,
+	error: volantis.pjax.method.error.push,
+	send: volantis.pjax.method.send.push
+}
+/********************脚本懒加载函数********************************/
+// 已经加入了setTimeout
+function loadScript(src, cb) {
+	setTimeout(function() {
+		var HEAD = document.getElementsByTagName('head')[0] || document.documentElement;
+		var script = document.createElement('script');
+		script.setAttribute('type','text/javascript');
+		if (cb) script.onload = cb;
+		script.setAttribute('src', src);
+		HEAD.appendChild(script);
+	});
+}
+//https://github.com/filamentgroup/loadCSS
+var loadCSS = function( href, before, media, attributes ){
+	var doc = window.document;
+	var ss = doc.createElement( "link" );
+	var ref;
+	if( before ){
+		ref = before;
+	}
+	else {
+		var refs = ( doc.body || doc.getElementsByTagName( "head" )[ 0 ] ).childNodes;
+		ref = refs[ refs.length - 1];
+	}
+	var sheets = doc.styleSheets;
+	if( attributes ){
+		for( var attributeName in attributes ){
+			if( attributes.hasOwnProperty( attributeName ) ){
+				ss.setAttribute( attributeName, attributes[attributeName] );
+			}
+		}
+	}
+	ss.rel = "stylesheet";
+	ss.href = href;
+	ss.media = "only x";
+	function ready( cb ){
+		if( doc.body ){
+			return cb();
+		}
+		setTimeout(function(){
+			ready( cb );
+		});
+	}
+	ready( function(){
+		ref.parentNode.insertBefore( ss, ( before ? ref : ref.nextSibling ) );
+	});
+	var onloadcssdefined = function( cb ){
+		var resolvedHref = ss.href;
+		var i = sheets.length;
+		while( i-- ){
+			if( sheets[ i ].href === resolvedHref ){
+				return cb();
+			}
+		}
+		setTimeout(function() {
+			onloadcssdefined( cb );
+		});
+	};
+	function loadCB(){
+		if( ss.addEventListener ){
+			ss.removeEventListener( "load", loadCB );
+		}
+		ss.media = media || "all";
+	}
+	if( ss.addEventListener ){
+		ss.addEventListener( "load", loadCB);
+	}
+	ss.onloadcssdefined = onloadcssdefined;
+	onloadcssdefined( loadCB );
+	return ss;
+};
+</script>
+<script>
+  
+  loadCSS("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14/css/all.min.css", window.volantis.loadcss);
+  
+  
+  
+  
+</script>
+<!-- required -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5/dist/jquery.min.js"></script>
+
+<script>
+  function pjax_fancybox() {
+    $(".md .gallery").find("img").each(function () { //渲染 fancybox
+      var element = document.createElement("a"); // a 标签
+      $(element).attr("class", "fancybox");
+      $(element).attr("pjax-fancybox", "");  // 过滤 pjax
+      $(element).attr("href", $(this).attr("src"));
+      if ($(this).attr("data-original")) {
+        $(element).attr("href", $(this).attr("data-original"));
+      }
+      $(element).attr("data-fancybox", "images");
+      var caption = "";   // 描述信息
+      if ($(this).attr('alt')) {  // 判断当前页面是否存在描述信息
+        $(element).attr('data-caption', $(this).attr('alt'));
+        caption = $(this).attr('alt');
+      }
+      var div = document.createElement("div");
+      $(div).addClass("fancybox");
+      $(this).wrap(div); // 最外层套 div ，其实主要作用还是 class 样式
+      var span = document.createElement("span");
+      $(span).addClass("image-caption");
+      $(span).text(caption); // 加描述
+      $(this).after(span);  // 再套一层描述
+      $(this).wrap(element);  // 最后套 a 标签
+    })
+    $(".md .gallery").find("img").fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+      closeClick: true,
+      helpers: {
+        overlay: {closeClick: true}
+      },
+      buttons: [
+        "zoom",
+        "close"
+      ]
+    });
+  };
+  function SCload_fancybox() {
+    if ($(".md .gallery").find("img").length == 0) return;
+    loadCSS("https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css", document.getElementById("loadcss"));
+    loadScript('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', pjax_fancybox)
+  };
+  $(function () {
+    SCload_fancybox();
+  });
+  function Pjax_SCload_fancybox(){
+	if (typeof $.fancybox == "undefined") {
+	 SCload_fancybox();
+    } else {
+	 pjax_fancybox();
+    }
+  }
+  volantis.pjax.push(Pjax_SCload_fancybox)
+  volantis.pjax.send(()=>{
+      if (typeof $.fancybox != "undefined") {
+        $.fancybox.close();    // 关闭弹窗
+      }
+  },'fancybox')
+</script>
+
+
+<!-- internal -->
+
+
+
+
+<script>
+  function loadIssuesJS() {
+    if ($(".md").find(".issues-api").length == 0) return;
+	
+	  loadScript('/js/issues.js');
+	
+  };
+  $(function () {
+    loadIssuesJS();
+  });
+  volantis.pjax.push(()=>{
+	if (typeof IssuesAPI == "undefined") {
+	  loadIssuesJS();
+	}
+  },"IssuesJS")
+</script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 0
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    lazyLoadInstance.update();
+  });
+  document.addEventListener('pjax:complete', function () {
+    lazyLoadInstance.update();
+  });
+</script>
+
+
+
+
+  
+
+<script>
+  window.FPConfig = {
+	delay: 0,
+	ignoreKeywords: [],
+	maxRPS: 5,
+	hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+<script src="/js/valine.js"></script>
+
+
+<script>
+  function emoji(path, idx, ext) {
+    return path + "/" + path + "-" + idx + "." + ext;
+  }
+  var emojiMaps = {};
+  for (var i = 1; i <= 54; i++) {
+    emojiMaps['tieba-' + i] = emoji('tieba', i, 'png');
+  }
+  for (var i = 1; i <= 101; i++) {
+    emojiMaps['qq-' + i] = emoji('qq', i, 'gif');
+  }
+  for (var i = 1; i <= 116; i++) {
+    emojiMaps['aru-' + i] = emoji('aru', i, 'gif');
+  }
+  for (var i = 1; i <= 125; i++) {
+    emojiMaps['twemoji-' + i] = emoji('twemoji', i, 'png');
+  }
+  for (var i = 1; i <= 4; i++) {
+    emojiMaps['weibo-' + i] = emoji('weibo', i, 'png');
+  }
+  function pjax_valine() {
+    if(!document.querySelectorAll("#valine_container")[0])return;
+    let pagePlaceholder = pdata.commentPlaceholder || "快来评论吧~";
+    let path = pdata.commentPath;
+    if (path.length == 0) {
+      let defaultPath = '';
+      path = defaultPath || decodeURI(window.location.pathname);
+    }
+    var valine = new Valine();
+    valine.init(Object.assign({"path":null,"placeholder":"快来评论吧~","appId":null,"appKey":null,"meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+      el: '#valine_container',
+      path: path,
+      placeholder: pagePlaceholder,
+      emojiCDN: 'https://cdn.jsdelivr.net/gh/volantis-x/cdn-emoji/valine/',
+      emojiMaps: emojiMaps,
+    }))
+  }
+  $(function () {
+    pjax_valine();
+  });
+  volantis.pjax.push(pjax_valine);
+</script>
+
+
+
+
+
+
+  
+<script src="/js/app.js"></script>
+
+
+
+<!-- optional -->
+
+  <script>
+const SearchServiceimagePath="https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@master/img/";
+const ROOT =  ("/" || "/").endsWith('/') ? ("/" || "/") : ("//" || "/" );
+
+$('.input.u-search-input').one('focus',function(){
+	
+		loadScript('/js/search/hexo.js',setSearchService);
+	
+})
+
+function listenSearch(){
+  
+    customSearch = new HexoSearch({
+      imagePath: SearchServiceimagePath
+    });
+  
+}
+function setSearchService() {
+	listenSearch();
+	
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  <script defer>
+
+  const LCCounter = {
+    app_id: 'u9j57bwJod4EDmXWdxrwuqQT-MdYXbMMI',
+    app_key: 'jfHtEKVE24j0IVCGHbvuFClp',
+    custom_api_server: '',
+
+    // 查询存储的记录
+    getRecord(Counter, url, title) {
+      return new Promise(function (resolve, reject) {
+        Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({url})))
+          .then(resp => resp.json())
+          .then(({results, code, error}) => {
+            if (code === 401) {
+              throw error;
+            }
+            if (results && results.length > 0) {
+              var record = results[0];
+              resolve(record);
+            } else {
+              Counter('post', '/classes/Counter', {url, title: title, times: 0})
+                .then(resp => resp.json())
+                .then((record, error) => {
+                  if (error) {
+                    throw error;
+                  }
+                  resolve(record);
+                }).catch(error => {
+                console.error('Failed to create', error);
+                reject(error);
+              });
+            }
+          }).catch((error) => {
+          console.error('LeanCloud Counter Error:', error);
+          reject(error);
+        });
+      })
+    },
+
+    // 发起自增请求
+    increment(Counter, incrArr) {
+      return new Promise(function (resolve, reject) {
+        Counter('post', '/batch', {
+          "requests": incrArr
+        }).then((res) => {
+          res = res.json();
+          if (res.error) {
+            throw res.error;
+          }
+          resolve(res);
+        }).catch((error) => {
+          console.error('Failed to save visitor count', error);
+          reject(error);
+        });
+      });
+    },
+
+    // 构建自增请求体
+    buildIncrement(objectId) {
+      return {
+        "method": "PUT",
+        "path": `/1.1/classes/Counter/${ objectId }`,
+        "body": {
+          "times": {
+            '__op': 'Increment',
+            'amount': 1
+          }
+        }
+      }
+    },
+
+    // 校验是否为有效的 UV
+    validUV() {
+      var key = 'LeanCloudUVTimestamp';
+      var flag = localStorage.getItem(key);
+      if (flag) {
+        // 距离标记小于 24 小时则不计为 UV
+        if (new Date().getTime() - parseInt(flag) <= 86400000) {
+          return false;
+        }
+      }
+      localStorage.setItem(key, new Date().getTime().toString());
+      return true;
+    },
+
+    addCount(Counter) {
+      var enableIncr = '' === 'true' && window.location.hostname !== 'localhost';
+      enableIncr = true;
+      var getterArr = [];
+      var incrArr = [];
+      // 请求 PV 并自增
+      var pvCtn = document.querySelector('#lc-sv');
+      if (pvCtn || enableIncr) {
+        var pvGetter = this.getRecord(Counter, 'http://example.com' + '/#lc-sv', 'Visits').then((record) => {
+          incrArr.push(this.buildIncrement(record.objectId))
+          var eles = document.querySelectorAll('#lc-sv #number');
+          if (eles.length > 0) {
+            eles.forEach((el,index,array)=>{
+              el.innerText = record.times + 1;
+              if (pvCtn) {
+                pvCtn.style.display = 'inline';
+              }
+            })
+          }
+        });
+        getterArr.push(pvGetter);
+      }
+
+      // 请求 UV 并自增
+      var uvCtn = document.querySelector('#lc-uv');
+      if (uvCtn || enableIncr) {
+        var uvGetter = this.getRecord(Counter, 'http://example.com' + '/#lc-uv', 'Visitors').then((record) => {
+          var vuv = this.validUV();
+          vuv && incrArr.push(this.buildIncrement(record.objectId))
+          var eles = document.querySelectorAll('#lc-uv #number');
+          if (eles.length > 0) {
+            eles.forEach((el,index,array)=>{
+              el.innerText = record.times + (vuv ? 1 : 0);
+              if (uvCtn) {
+                uvCtn.style.display = 'inline';
+              }
+            })
+          }
+        });
+        getterArr.push(uvGetter);
+      }
+
+      // 请求文章的浏览数，如果是当前页面就自增
+      var allPV = document.querySelectorAll('#lc-pv');
+      if (allPV.length > 0 || enableIncr) {
+        for (i = 0; i < allPV.length; i++) {
+          let pv = allPV[i];
+          let title = pv.getAttribute('data-title');
+          var url = 'http://example.com' + pv.getAttribute('data-path');
+          if (url) {
+            var viewGetter = this.getRecord(Counter, url, title).then((record) => {
+              // 是当前页面就自增
+              let curPath = window.location.pathname;
+              if (curPath.includes('index.html')) {
+                curPath = curPath.substring(0, curPath.lastIndexOf('index.html'));
+              }
+              if (pv.getAttribute('data-path') == curPath) {
+                incrArr.push(this.buildIncrement(record.objectId));
+              }
+              if (pv) {
+                var ele = pv.querySelector('#lc-pv #number');
+                if (ele) {
+                  if (pv.getAttribute('data-path') == curPath) {
+                    ele.innerText = (record.times || 0) + 1;
+                  } else {
+                    ele.innerText = record.times || 0;
+                  }
+                  pv.style.display = 'inline';
+                }
+              }
+            });
+            getterArr.push(viewGetter);
+          }
+        }
+      }
+
+      // 如果启动计数自增，批量发起自增请求
+      if (enableIncr) {
+        Promise.all(getterArr).then(() => {
+          incrArr.length > 0 && this.increment(Counter, incrArr);
+        })
+      }
+
+    },
+
+
+    fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${ api_server }/1.1${ url }`, {
+          method,
+          headers: {
+            'X-LC-Id': this.app_id,
+            'X-LC-Key': this.app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      this.addCount(Counter);
+    },
+
+    refreshCounter() {
+      var api_server = this.app_id.slice(-9) !== '-MdYXbMMI' ? this.custom_api_server : `https://${ this.app_id.slice(0, 8).toLowerCase() }.api.lncldglobal.com`;
+      if (api_server) {
+        this.fetchData(api_server);
+      } else {
+        fetch('https://app-router.leancloud.cn/2/route?appId=' + this.app_id)
+          .then(resp => resp.json())
+          .then(({api_server}) => {
+            this.fetchData('https://' + api_server);
+          });
+      }
+    }
+
+  };
+
+  LCCounter.refreshCounter();
+
+  document.addEventListener('pjax:complete', function () {
+    LCCounter.refreshCounter();
+  });
+</script>
+
+
+
+
+  <script>
+const rootElement = document.documentElement;
+const darkModeStorageKey = "user-color-scheme";
+const rootElementDarkModeAttributeName = "data-user-color-scheme";
+
+const setLS = (k, v) => {
+    localStorage.setItem(k, v);
+};
+
+const removeLS = (k) => {
+    localStorage.removeItem(k);
+};
+
+const getLS = (k) => {
+    return localStorage.getItem(k);
+};
+
+const getModeFromCSSMediaQuery = () => {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
+const resetRootDarkModeAttributeAndLS = () => {
+  rootElement.removeAttribute(rootElementDarkModeAttributeName);
+  removeLS(darkModeStorageKey);
+};
+
+const validColorModeKeys = {
+  dark: true,
+  light: true,
+};
+
+const applyCustomDarkModeSettings = (mode) => {
+  const currentSetting = mode || getLS(darkModeStorageKey);
+
+  if (currentSetting === getModeFromCSSMediaQuery()) {
+    resetRootDarkModeAttributeAndLS();
+  } else if (validColorModeKeys[currentSetting]) {
+    rootElement.setAttribute(rootElementDarkModeAttributeName, currentSetting);
+  } else {
+    resetRootDarkModeAttributeAndLS();
+  }
+};
+
+const invertDarkModeObj = {
+  dark: "light",
+  light: "dark",
+};
+
+/**
+ * get target mode
+ */
+const toggleCustomDarkMode = () => {
+  let currentSetting = getLS(darkModeStorageKey);
+
+  if (validColorModeKeys[currentSetting]) {
+    currentSetting = invertDarkModeObj[currentSetting];
+  } else if (currentSetting === null) {
+    currentSetting = invertDarkModeObj[getModeFromCSSMediaQuery()];
+  } else {
+    return;
+  }
+  setLS(darkModeStorageKey, currentSetting);
+  return currentSetting;
+};
+
+/**
+ * bind click event for toggle button
+ */
+var btn=$("#wrapper .toggle-mode-btn,#rightmenu-wrapper .toggle-mode-btn");
+function bindToggleButton() {
+    btn.on('click',(e) => {
+      const mode = toggleCustomDarkMode();
+      applyCustomDarkModeSettings(mode);
+    });
+}
+
+applyCustomDarkModeSettings();
+document.addEventListener("DOMContentLoaded", bindToggleButton);
+volantis.pjax.push(bindToggleButton);
+volantis.pjax.send(()=>{
+	btn.unbind('click');
+},'toggle-mode-btn-unbind');
+</script>
+
+
+
+
+
+
+
+
+<script>
+function listennSidebarTOC() {
+  const navItems = document.querySelectorAll(".toc li");
+  if (!navItems.length) return;
+  const sections = [...navItems].map((element) => {
+    const link = element.querySelector(".toc-link");
+    const target = document.getElementById(
+      decodeURI(link.getAttribute("href")).replace("#", "")
+    );
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.scrollTo({
+		top: target.offsetTop + 100,
+		
+		behavior: "smooth"
+		
+	  });
+    });
+    return target;
+  });
+
+  function activateNavByIndex(target) {
+    if (target.classList.contains("active-current")) return;
+
+    document.querySelectorAll(".toc .active").forEach((element) => {
+      element.classList.remove("active", "active-current");
+    });
+    target.classList.add("active", "active-current");
+    let parent = target.parentNode;
+    while (!parent.matches(".toc")) {
+      if (parent.matches("li")) parent.classList.add("active");
+      parent = parent.parentNode;
+    }
+  }
+
+  function findIndex(entries) {
+    let index = 0;
+    let entry = entries[index];
+    if (entry.boundingClientRect.top > 0) {
+      index = sections.indexOf(entry.target);
+      return index === 0 ? 0 : index - 1;
+    }
+    for (; index < entries.length; index++) {
+      if (entries[index].boundingClientRect.top <= 0) {
+        entry = entries[index];
+      } else {
+        return sections.indexOf(entry.target);
+      }
+    }
+    return sections.indexOf(entry.target);
+  }
+
+  function createIntersectionObserver(marginTop) {
+    marginTop = Math.floor(marginTop + 10000);
+    let intersectionObserver = new IntersectionObserver(
+      (entries, observe) => {
+        let scrollHeight = document.documentElement.scrollHeight + 100;
+        if (scrollHeight > marginTop) {
+          observe.disconnect();
+          createIntersectionObserver(scrollHeight);
+          return;
+        }
+        let index = findIndex(entries);
+        activateNavByIndex(navItems[index]);
+      },
+      {
+        rootMargin: marginTop + "px 0px -100% 0px",
+        threshold: 0,
+      }
+    );
+    sections.forEach((element) => {
+      element && intersectionObserver.observe(element);
+    });
+  }
+  createIntersectionObserver(document.documentElement.scrollHeight);
+}
+
+document.addEventListener("DOMContentLoaded", listennSidebarTOC);
+document.addEventListener("pjax:success", listennSidebarTOC);
+</script>
+
+<!-- more -->
+
+ 
+	   
+	    
+
+
+<script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script>
+
+
+<script>
+    var pjax;
+    document.addEventListener('DOMContentLoaded', function () {
+      pjax = new Pjax({
+        elements: 'a[href]:not([href^="#"]):not([href="javascript:void(0)"]):not([pjax-fancybox])',
+        selectors: [
+          "title",
+          
+          "#pjax-container",
+          "#pjax-header-nav-list"
+        ],
+        cacheBust: false,   // url 地址追加时间戳，用以避免浏览器缓存
+        timeout: 5000
+      });
+    });
+
+    document.addEventListener('pjax:send', function (e) {
+      //window.stop(); // 相当于点击了浏览器的停止按钮
+
+      try {
+        var currentUrl = window.location.pathname;
+        var targetUrl = e.triggerElement.href;
+        var banUrl = [""];
+        if (banUrl[0] != "") {
+          banUrl.forEach(item => {
+            if(currentUrl.indexOf(item) != -1 || targetUrl.indexOf(item) != -1) {
+              window.location.href = targetUrl;
+            }
+          });
+        }
+      } catch (error) {}
+
+      window.subData = null; // 移除标题（用于一二级导航栏切换处）
+
+      volantis.$switcher.removeClass('active'); // 关闭移动端激活的搜索框
+      volantis.$header.removeClass('z_search-open'); // 关闭移动端激活的搜索框
+      volantis.$wrapper.removeClass('sub'); // 跳转页面时关闭二级导航
+
+      // 解绑事件 避免重复监听
+      volantis.$topBtn.unbind('click');
+      $('.menu a').unbind('click');
+      $(window).unbind('resize');
+      $(window).unbind('scroll');
+      $(document).unbind('scroll');
+      $(document).unbind('click');
+      $('body').unbind('click');
+	  // 使用 volantis.pjax.send 方法传入pjax:send回调函数 参见layout/_partial/scripts/global.ejs
+	  volantis.pjax.method.send.start();
+    });
+
+    document.addEventListener('pjax:complete', function () {
+      $('.nav-main').find('.list-v').not('.menu-phone').removeAttr("style",""); // 移除小尾巴的移除
+      $('.menu-phone.list-v').removeAttr("style",""); // 移除小尾巴的移除
+      $('script[data-pjax], .pjax-reload script').each(function () {
+        $(this).parent().append($(this).remove());
+      });
+      try{
+		// 使用 volantis.pjax.push 方法传入重载函数 参见layout/_partial/scripts/global.ejs
+		volantis.pjax.method.complete.start();
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    document.addEventListener('pjax:error', function (e) {
+	  // 使用 volantis.pjax.error 方法传入pjax:error回调函数 参见layout/_partial/scripts/global.ejs
+	  volantis.pjax.method.error.start();
+      window.location.href = e.triggerElement.href;
+    });
+</script>
+ 
+	  
+    </div>
+  </body>
+</html>

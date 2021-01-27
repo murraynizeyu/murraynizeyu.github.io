@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head hexo-theme='https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1'>
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
+    
+  
+  <!-- 渲染优化 -->
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <link rel="preload" href="/css/first.css" as="style">
+  
+
+  <!-- 页面元数据 -->
+  
+  <title>【Web安全】五、XSS基础 - Hexo</title>
+  
+    <meta name="keywords" content="XSS">
+  
+
+  
+    <meta name="description" content="本文学习XSS基础以及DVWA模拟环境的几道例题。">
+  
+
+  <!-- feed -->
+  
+
+  <!-- import meta -->
+  
+
+  <!-- link -->
+  
+
+  <!-- import link -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/first.css">
+
+  
+
+  
+  <link rel="stylesheet" href="/css/style.css" media="print" onload="this.media='all';this.onload=null">
+  <noscript><link rel="stylesheet" href="/css/style.css"></noscript>
+  
+
+  <script id="loadcss"></script>
+
+  
+<script>
+if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMode))
+    document.write(
+	'<style>'+
+		'html{'+
+			'overflow-x: hidden !important;'+
+			'overflow-y: hidden !important;'+
+		'}'+
+		'.kill-ie{'+
+			'text-align:center;'+
+			'height: 100%;'+
+			'margin-top: 15%;'+
+			'margin-bottom: 5500%;'+
+		'}'+
+	'</style>'+
+    '<div class="kill-ie">'+
+        '<h1><b>抱歉，您的浏览器无法访问本站</b></h1>'+
+        '<h3>微软已经于2016年终止了对 Internet Explorer (IE) 10 及更早版本的支持，<br/>'+
+        '继续使用存在极大的安全隐患，请使用当代主流的浏览器进行访问。</h3><br/>'+
+        '<a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-cn/WindowsForBusiness/End-of-IE-support"><strong>了解详情 ></strong></a>'+
+    '</div>');
+</script>
+
+
+<noscript>
+	<style>
+		html{
+			overflow-x: hidden !important;
+			overflow-y: hidden !important;
+		}
+		.kill-noscript{
+			text-align:center;
+			height: 100%;
+			margin-top: 15%;
+			margin-bottom: 5500%;
+		}
+	</style>
+    <div class="kill-noscript">
+        <h1><b>抱歉，您的浏览器无法访问本站</b></h1>
+        <h3>本页面需要浏览器支持（启用）JavaScript</h3><br/>
+        <a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=启用JavaScript"><strong>了解详情 ></strong></a>
+    </div>
+</noscript>
+
+</head>
+
+  <body>
+    
+
+<header id="l_header" class="l_header auto shadow blur show" style='opacity: 0' >
+  <div class='container'>
+  <div id='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h m-phone' id="pjax-header-nav-list">
+        <li><a id="s-comment" class="fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+          <li><a id="s-toc" class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+            <img no-lazy class='logo' src='https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png'/>
+          
+          
+          
+        </a>
+      
+
+			<div class='menu navigation'>
+				<ul class='nav-list-h m-pc'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-rss fa-fw'></i>博客
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/tags/
+                  
+                  
+                  
+                    id="tags"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>标签
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/friends/
+                  
+                  
+                  
+                    id="friends"
+                  >
+                  <i class='fas fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
+
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fas fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="Search..." />
+        </form>
+      </div>
+
+			<ul class='switcher nav-list-h m-phone'>
+				
+					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
+				
+				<li>
+          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-rss fa-fw'></i>博客
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/tags/
+                  
+                  
+                  
+                    id="tags"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>标签
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/friends/
+                  
+                  
+                  
+                    id="friends"
+                  >
+                  <i class='fas fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+		</div>
+	</div>
+  </div>
+</header>
+
+    <div id="l_body">
+      <div id="l_cover">
+  
+    
+        <div id="full" class='cover-wrapper post dock' style="display: none;">
+          
+            <div class='cover-bg lazyload placeholder' data-bg="https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture"></div>
+          
+          <div class='cover-body'>
+  <div class='top'>
+    
+    
+      <p class="title">Volantis</p>
+    
+    
+  </div>
+  <div class='bottom'>
+    <div class='menu navigation'>
+      <div class='list-h'>
+        
+          
+            <a href="/v4/getting-started/"
+              
+              
+              id="v4getting-started">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f5c3.svg'><p>文档</p>
+            </a>
+          
+            <a href="/faqs/"
+              
+              
+              id="faqs">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f516.svg'><p>帮助</p>
+            </a>
+          
+            <a href="/examples/"
+              
+              
+              id="examples">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f396.svg'><p>示例</p>
+            </a>
+          
+            <a href="/contributors/"
+              
+              
+              id="contributors">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f389.svg'><p>社区</p>
+            </a>
+          
+            <a href="/archives/"
+              
+              
+              id="archives">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f4f0.svg'><p>博客</p>
+            </a>
+          
+            <a target="_blank" rel="noopener" href="https://github.com/volantis-x/hexo-theme-volantis/"
+              
+              
+              id="https:githubcomvolantis-xhexo-theme-volantis">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f9ec.svg'><p>源码</p>
+            </a>
+          
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+          <div id="scroll-down" style="display: none;"><i class="fa fa-chevron-down scroll-down-effects"></i></div>
+        </div>
+    
+  
+  </div>
+
+      <div id="safearea">
+        <div class="body-wrapper" id="pjax-container">
+          
+
+<div class='l_main'>
+  <article class="article post white-box reveal md shadow article-type-post" id="post" itemscope itemprop="blogPost">
+  
+
+
+  
+  <div class="article-meta" id="top">
+    
+    
+    
+      <h1 class="title">
+        【Web安全】五、XSS基础
+      </h1>
+      <div class='new-meta-box'>
+        
+          
+            
+<div class='new-meta-item author'>
+  <a class='author' href="/" rel="nofollow">
+    <img no-lazy src="">
+    <p>请设置文章作者</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  <div class='new-meta-item category'>
+    <a class='notlink'>
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="sep"></span><a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web%E5%AE%89%E5%85%A8/">Web安全</a>
+    </a>
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Apr 8, 2020</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  <div class="new-meta-item browse leancloud">
+    <a class='notlink'>
+      
+      <div id="lc-pv" data-title="【Web安全】五、XSS基础" data-path="/2020/04/08/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%94%E3%80%81XSS%E5%9F%BA%E7%A1%80/">
+        <i class="fas fa-eye fa-fw" aria-hidden="true"></i>
+        <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
+        次浏览
+      </div>
+    </a>
+  </div>
+
+
+          
+        
+      </div>
+    
+  </div>
+
+
+  
+  
+  <p>本文学习XSS基础以及DVWA模拟环境的几道例题。</p>
+<a id="more"></a>
+
+<h2 id="XSS介绍与原理"><a href="#XSS介绍与原理" class="headerlink" title="XSS介绍与原理"></a>XSS介绍与原理</h2><p>XSS攻击是在网页中<strong>嵌入客户端恶意脚本代码</strong>，一般是使用JavaScript语言编写。</p>
+<p>JavaScript可以用来<strong>获取用户的Cookie</strong>、<strong>改变网页内容</strong>、<strong>URL跳转</strong>，因此攻击者需要做的是向Web页面注入JavaScript，就可以盗取用户Cookie、黑掉页面、导航到恶意网站。</p>
+<p>通常在url中加入<script>JavaScript恶意代码</script>来实现一些特殊效果，也可以在JavaScirpt中利用url形式来加载外部脚本。</p>
+<p>漏洞实现原理</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdkdkz55npj317y09st9c.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdkdkz55npj317y09st9c.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200406140611891"></p>
+<p>XSS漏洞分类：反射型、存储型、DOM型</p>
+<p>XSS漏洞修复</p>
+<ol>
+<li>HTML实体编码</li>
+<li>使用白名单过滤用户输入的恶意字符</li>
+<li>根据业务场景对症下药</li>
+</ol>
+<h3 id="存储型XSS实战"><a href="#存储型XSS实战" class="headerlink" title="存储型XSS实战"></a>存储型XSS实战</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>攻击者<strong>在页面上插入XSS代码</strong>，服务端将数据存入数据库，当用户访问到存在XSS漏洞的页面时，服务端从数据库中取出数据展示到页面上，导致XSS代码执行，达到攻击效果。</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdkdkztfkaj31ik0iet9u.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdkdkztfkaj31ik0iet9u.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200406150941187"></p>
+<p>允许用户存储数据的Web应用程序都可能会出现存储型XSS漏洞，当攻击者提交一段XSS代码后，被服务器端接收并存储，当攻击者再次访问某个界面时，这段XSS代码被程序读出来响应给浏览器，造成XSS攻击。</p>
+<blockquote>
+<p>比起其他两种类型的XSS攻击，存储型XSS不需要用户手动去触发。</p>
+</blockquote>
+<p>注意：判断输出数据是否在属性内</p>
+<p>当输出数据在属性内，<input type="text" name="content" value="<script>alert(1)</script>"/></p>
+<p>以上JavaScript代码虽然插入到HTML中，但因为XSS代码在Value属性中，最终当做值来处理，浏览器在解析HML时，会将数据以文本的形式输出在网页。</p>
+<p>因此我们需要根据响应的标签构造HTML代码来闭合，插入XSS代码为<code>&quot;/ &gt;&lt;script&gt;alert(1)&lt;/script&gt;</code>，最终在HTMl文档中为<code>&lt;input type=&quot;text&quot; name=&quot;content&quot; value=&quot;&quot;/ &gt;&lt;script&gt;alert(1)&lt;/script&gt;&quot;/&gt;</code>，这样就可以闭合input标签，使得输出的内容不再Value属性内，从而造成XSS跨站漏洞。</p>
+<h4 id="存储型XSS测试步骤"><a href="#存储型XSS测试步骤" class="headerlink" title="存储型XSS测试步骤"></a>存储型XSS测试步骤</h4><ol>
+<li><p>添加正常留言’helloworld‘，审查元素得知该HTML代码为<code>&lt;li&gt;&lt;strong&gt;username&lt;/strong&gt;&lt;span class=&quot;message&quot;&gt;helloword&lt;/span&gt;</code></p>
+</li>
+<li><p>如果不清楚具体输出位置，有三种模糊测试方法</p>
+<ul>
+<li>普通注入 <code>&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code></li>
+<li>闭合标签注入 <code>&quot; /&gt;&lt;script&gt;alert(document.cookie)&lt;/script&gt;</code></li>
+<li>闭合标签注入<code>&lt;/textarea&gt;&#39;&quot;&gt;&lt;script&gt;alert(document.cookie)&lt;/script</code></li>
+</ul>
+</li>
+<li><p>当存储型XSS代码注入后，每次加载留言界面XSS代码都会被执行</p>
+</li>
+</ol>
+<p><strong>总结：留言就是恶意XSS代码伪装的。</strong></p>
+<h3 id="反射型XSS"><a href="#反射型XSS" class="headerlink" title="反射型XSS"></a>反射型XSS</h3><h4 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h4><p>攻击者<strong>在URL中插入XSS代码</strong>，服务端将URL中的XSS代码输出到页面上，攻击者将带有XSS代码的URL发送给用户，用户打开后受到XSS攻击。</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdlb0qt0pij319w0fgaez.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdlb0qt0pij319w0fgaez.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200407165505422"></p>
+<h4 id="代码解析"><a href="#代码解析" class="headerlink" title="代码解析"></a>代码解析</h4><p>程序接受username值后再输出，如果<code>username=&lt;script&gt;恶意代码&lt;/script&gt;</code>，则会让恶意代码在服务器端执行。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  <span class="variable">$username</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;username&#x27;</span>]；</span><br><span class="line">  <span class="keyword">echo</span> <span class="variable">$username</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>攻击者利用站内信方式将带有恶意代码的URL发送给正常用户以获取用户的Cookie即登录信息，则攻击者可以利用Cookie（以正常用户的身份）登录该网站。</p>
+<p>方法：寻找需要传入参数（形如<code>?id=1</code>）的URL，在闭合标签再加入<code>&lt;script&gt;</code>代码。</p>
+<h3 id="DOM型XSS"><a href="#DOM型XSS" class="headerlink" title="DOM型XSS"></a>DOM型XSS</h3><h4 id="DOM简介"><a href="#DOM简介" class="headerlink" title="DOM简介"></a>DOM简介</h4><p>DOM全称Document Object Model（文档对象模型），使用DOM可以允许程序和脚本动态地访问和更新文件的内容、结果和样式。</p>
+<p>HTML DOM树<br><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdljzwmcotj30wo0ggjv7.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdljzwmcotj30wo0ggjv7.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200308140930363"></p>
+<h4 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h4><p>攻击者在URL中插入XSS代码，前端页面直接从URL中获取XSS代码并输出到页面，导致XSS代码执行，攻击者将带有XSS代码的URL发送给用户，用户打开后受到XSS攻击。（与反射型XSS漏洞相比，DOM型XSS漏洞不需要经过后端处理，只在前端进行）</p>
+<h4 id="经典DOM型XSS示例"><a href="#经典DOM型XSS示例" class="headerlink" title="经典DOM型XSS示例"></a>经典DOM型XSS示例</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取URL中的content值并输出</span></span><br><span class="line"><span class="keyword">var</span> temp = <span class="built_in">document</span>.URL;</span><br><span class="line"><span class="keyword">var</span> index = <span class="built_in">document</span>.URL.indexOf(<span class="string">&quot;content=&quot;</span>) + <span class="number">4</span>;</span><br><span class="line"><span class="keyword">var</span> par = temp.substring(index);</span><br><span class="line"><span class="built_in">document</span>.write(<span class="built_in">decodeURI</span>(par));</span><br></pre></td></tr></table></figure>
+<h4 id="常见方法"><a href="#常见方法" class="headerlink" title="常见方法"></a>常见方法</h4><p>输入<code>http://127.0.0.1/dom.html?content=&lt;script&gt;alert(/xss/)&lt;/script&gt;</code>就会产生XSS漏洞。</p>
+<h2 id="常用XSS漏洞修复函数"><a href="#常用XSS漏洞修复函数" class="headerlink" title="常用XSS漏洞修复函数"></a>常用XSS漏洞修复函数</h2><blockquote>
+<p>在下面实战中我们还会讲解一遍函数的具体作用</p>
+</blockquote>
+<ol>
+<li>Strip_tags() 所有HTML、XML、PHP元素均被删除</li>
+<li>htmlspecialchars 将部分字符转换为HTML实体，防止浏览器将其识别为HTML元素。<ul>
+<li><code>&quot; </code>–&gt; <code>&amp;quot;</code></li>
+<li><code>&amp;</code>–&gt;<code>&amp;amp;</code></li>
+<li><code>&#39;</code>–&gt;<code>&#39;</code></li>
+<li><code>&lt;</code>–&gt;<code>&amp;lt</code></li>
+<li><code>&gt;</code>–&gt;<code>&amp;gt</code></li>
+</ul>
+</li>
+<li>addslashes() 在字符串中出现预定字符之前添加反斜杠的字符串。</li>
+<li>stripslahes(string) 删除字符串中的反斜杠</li>
+</ol>
+<h2 id="XSS辅助测试工具"><a href="#XSS辅助测试工具" class="headerlink" title="XSS辅助测试工具"></a>XSS辅助测试工具</h2><h4 id="Beef"><a href="#Beef" class="headerlink" title="Beef"></a><a target="_blank" rel="noopener" href="https://github.com/beefproject/beef">Beef</a></h4><p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdll65s7bij318q0b4aej.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdll65s7bij318q0b4aej.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200407224617512"></p>
+<p>搭建：</p>
+<ol>
+<li>docker pull janes/beef</li>
+<li>docker run –rm -p 3000:3000 janes/beef</li>
+<li>访问<a target="_blank" rel="noopener" href="http://127.0.0.1:3000/ui/panel">http://127.0.0.1:3000/ui/panel</a> 默认账号密码beef/beef</li>
+</ol>
+<p>使用：当用户执行XSS代码之后，获取信息进行详细分析。</p>
+<h4 id="XSS’OR"><a href="#XSS’OR" class="headerlink" title="XSS’OR"></a><a target="_blank" rel="noopener" href="http://xssor.io/">XSS’OR</a></h4><p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdllidwdt4j30ck03a0sr.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdllidwdt4j30ck03a0sr.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200407225802626"></p>
+<p>Encode/Decode 代码编码解码</p>
+<p>Codz 测试CSS工具，生成一些POST数据</p>
+<p>Probe 给你一个JS文件你可以插入到指定的网页中，以来获取信息。</p>
+<h4 id="XSS平台"><a href="#XSS平台" class="headerlink" title="XSS平台"></a><a target="_blank" rel="noopener" href="http://secbox.cn/">XSS平台</a></h4><p>网上JS漏洞集合平台</p>
+<h4 id="IE-Tester"><a href="#IE-Tester" class="headerlink" title="IE Tester"></a><a href="">IE Tester</a></h4><p>模拟IE低版本</p>
+<h2 id="DVWA-XSS实战"><a href="#DVWA-XSS实战" class="headerlink" title="DVWA XSS实战"></a>DVWA XSS实战</h2><blockquote>
+<p>安装DVWA模拟环境</p>
+<p>下载并安装docker </p>
+<p>docker pull citizenstig/dvwa</p>
+<p>docker run -dt -p 8997:80 citizenstig/dvwa</p>
+<p>访问<a target="_blank" rel="noopener" href="http://127.0.0.1:8997/">http://127.0.0.1:8997</a> 默认账号密码admin/password</p>
+</blockquote>
+<h3 id="XSS-Reflected-Low"><a href="#XSS-Reflected-Low" class="headerlink" title="XSS(Reflected) Low"></a>XSS(Reflected) Low</h3><h4 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// Is there any input?</span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">&quot;name&quot;</span>, <span class="variable">$_GET</span> ) &amp;&amp; <span class="variable">$_GET</span>[ <span class="string">&#x27;name&#x27;</span> ] != <span class="literal">NULL</span> ) &#123;</span><br><span class="line">    <span class="comment">// Feedback for end user</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;&lt;pre&gt;Hello &#x27;</span> . <span class="variable">$_GET</span>[ <span class="string">&#x27;name&#x27;</span> ] . <span class="string">&#x27;&lt;/pre&gt;&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>从源代码可以看到代码直接引用name参数，并没有任何的过滤与检查，存在明显的XSS漏洞。</p>
+<h4 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>输入<code>&lt;script&gt;alert(/nzy/)&lt;/script&gt;</code>,弹框</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdm4vo7zhfj30ow078t8v.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdm4vo7zhfj30ow078t8v.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200408100811511"></p>
+<p>url:<a target="_blank" rel="noopener" href="http://127.0.0.1:8997/vulnerabilities/xss_r/?name=%3Cscript%3Ealert(/nzy/)%3C/script%3E#">http://127.0.0.1:8997/vulnerabilities/xss_r/?name=%3Cscript%3Ealert%28%2Fnzy%2F%29%3C%2Fscript%3E#</a></p>
+<h3 id="XSS-Reflected-Medium"><a href="#XSS-Reflected-Medium" class="headerlink" title="XSS(Reflected) Medium"></a>XSS(Reflected) Medium</h3><h4 id="代码分析-1"><a href="#代码分析-1" class="headerlink" title="代码分析"></a>代码分析</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">&quot;name&quot;</span>, <span class="variable">$_GET</span> ) &amp;&amp; <span class="variable">$_GET</span>[ <span class="string">&#x27;name&#x27;</span> ] != <span class="literal">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    <span class="variable">$name</span> = str_replace( <span class="string">&#x27;&lt;script&gt;&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="variable">$_GET</span>[ <span class="string">&#x27;name&#x27;</span> ] ); </span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;&quot;</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>从源代码可以看出对输入进行了过滤，基于黑名单思想，利用str_replace()函数将输入中含有<code>&lt;script&gt;</code>替换成<code> </code>。但是这种防护机制仍可以轻松绕过。</p>
+<h4 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><ol>
+<li>利用双写绕过，输入<code>&lt;scr&lt;script&gt;ipt&gt;alert(/nzy/)&lt;/script&gt;</code>，在经过str_replace()函数处理后为<code>&lt;script&gt;alert(/nzy/)&lt;/script&gt;</code></li>
+<li>大小写混淆绕过，黑名单思想只禁止<code>&lt;script&gt;</code>，因此可以利用大小写混淆绕过，输入<code>&lt;Script&gt;alert(/nzy/)&lt;/scirpt&gt;</code></li>
+</ol>
+<h3 id="XSS-Reflected-High"><a href="#XSS-Reflected-High" class="headerlink" title="XSS(Reflected) High"></a>XSS(Reflected) High</h3><h4 id="代码分析-2"><a href="#代码分析-2" class="headerlink" title="代码分析"></a>代码分析</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">&quot;name&quot;</span>, <span class="variable">$_GET</span> ) &amp;&amp; <span class="variable">$_GET</span>[ <span class="string">&#x27;name&#x27;</span> ] != <span class="literal">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    <span class="variable">$name</span> = preg_replace( <span class="string">&#x27;/&lt;(.*)s(.*)c(.*)r(.*)i(.*)p(.*)t/i&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="variable">$_GET</span>[ <span class="string">&#x27;name&#x27;</span> ] ); </span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;&quot;</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>从源代码可以看出同样是使用了黑名单思想，但是preg_replace()函数用于正则表达式的搜索和替换，这样使得Medium级别的双写绕过、大小写混淆绕过方法都是小。</p>
+<p>Preg_replace()函数中i表示忽略大小写</p>
+<h4 id="漏洞利用-2"><a href="#漏洞利用-2" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>虽然无法再使用带有<code>&lt;script&gt;</code>字样的标签来注入XSS代码，但是可以利用img、body等标签事件或者iframe等标签src来注入恶意的JS代码。</p>
+<p>输入<code>&lt;img src=1 onerror=alert(/nzy/)&gt;</code></p>
+<h3 id="XSS-Reflected-Impossible"><a href="#XSS-Reflected-Impossible" class="headerlink" title="XSS(Reflected) Impossible"></a>XSS(Reflected) Impossible</h3><h4 id="代码分析-3"><a href="#代码分析-3" class="headerlink" title="代码分析"></a>代码分析</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">&quot;name&quot;</span>, <span class="variable">$_GET</span> ) &amp;&amp; <span class="variable">$_GET</span>[ <span class="string">&#x27;name&#x27;</span> ] != <span class="literal">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( <span class="variable">$_REQUEST</span>[ <span class="string">&#x27;user_token&#x27;</span> ], <span class="variable">$_SESSION</span>[ <span class="string">&#x27;session_token&#x27;</span> ], <span class="string">&#x27;index.php&#x27;</span> ); </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    <span class="variable">$name</span> = htmlspecialchars( <span class="variable">$_GET</span>[ <span class="string">&#x27;name&#x27;</span> ] ); </span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;&quot;</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在High级别中，我们可以利用img、body等标签事件进行注入恶意JS代码，所以在impossible级别中，利用上文讲到过的htmlspecialchars()函数将部分字符（<code>&amp; &quot; &#39; &lt; &gt; </code>）转换为HTML实体，防止浏览器将其识别为HTML元素。</p>
+<h3 id="XSS-Stored-Low"><a href="#XSS-Stored-Low" class="headerlink" title="XSS(Stored) Low"></a>XSS(Stored) Low</h3><h4 id="代码分析-4"><a href="#代码分析-4" class="headerlink" title="代码分析"></a>代码分析</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( <span class="variable">$_POST</span>[ <span class="string">&#x27;btnSign&#x27;</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    <span class="variable">$message</span> = trim( <span class="variable">$_POST</span>[ <span class="string">&#x27;mtxMessage&#x27;</span> ] ); </span><br><span class="line">    <span class="variable">$name</span>    = trim( <span class="variable">$_POST</span>[ <span class="string">&#x27;txtName&#x27;</span> ] ); </span><br><span class="line">    <span class="comment">// Sanitize message input </span></span><br><span class="line">    <span class="variable">$message</span> = stripslashes( <span class="variable">$message</span> ); </span><br><span class="line">    <span class="variable">$message</span> = mysql_real_escape_string( <span class="variable">$message</span> ); </span><br><span class="line">    <span class="comment">// Sanitize name input </span></span><br><span class="line">    <span class="variable">$name</span> = mysql_real_escape_string( <span class="variable">$name</span> ); </span><br><span class="line">    <span class="comment">// Update database </span></span><br><span class="line">    <span class="variable">$query</span>  = <span class="string">&quot;INSERT INTO guestbook ( comment, name ) VALUES ( &#x27;<span class="subst">$message</span>&#x27;, &#x27;<span class="subst">$name</span>&#x27; );&quot;</span>; </span><br><span class="line">    <span class="variable">$result</span> = mysql_query( <span class="variable">$query</span> ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">&#x27;&lt;pre&gt;&#x27;</span> . mysql_error() . <span class="string">&#x27;&lt;/pre&gt;&#x27;</span> ); </span><br><span class="line">    <span class="comment">//mysql_close(); </span></span><br><span class="line">&#125; </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>针对代码中提到的几个函数解释一下</p>
+<ol>
+<li>trim(string,charlist) 功能：移除字符串两侧的空白字符或者其他预定义字符(<code>\t \n \x0B \r  </code>)，可选参数charlist支持增添额外需要删除的字符</li>
+<li>Mysql_real_escape_string(string,connection)这个函数在 <a href="%5Bhttp://nizeyu.xyz/2020/03/28/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E5%9B%9B%E3%80%81SQL%E6%B3%A8%E5%85%A5%E9%98%B2%E5%BE%A1%E7%BB%95%E8%BF%87/%5D(http://nizeyu.xyz/2020/03/28/%5BWeb%E5%AE%89%E5%85%A8%5D%E5%9B%9B%E3%80%81SQL%E6%B3%A8%E5%85%A5%E9%98%B2%E5%BE%A1%E7%BB%95%E8%BF%87/)">SQL注入防御绕过</a>曾经提到过。功能：对字符串中的特殊符号（<code>\x00 \n \r \ &#39; &quot; \x1a</code>）进行转义。</li>
+<li>stripslahes(string) 功能：删除字符串中的反斜杠</li>
+</ol>
+<p>从源代码可以看出对输入没有做XSS方面的过滤与检查就直接存储至数据库了，因此存在明显的存储型XSS漏洞。</p>
+<h4 id="漏洞利用-3"><a href="#漏洞利用-3" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>直接输入<code>&lt;script&gt;alert(/nzy/)&lt;/script&gt;</code>，需要注意的是name变量在前端中对字数有限制，我们将其修改至30。</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gdmpktc9o3j30xo05sdgl.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gdmpktc9o3j30xo05sdgl.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200408220418246"></p>
+<h3 id="XSS-Stored-Medium"><a href="#XSS-Stored-Medium" class="headerlink" title="XSS(Stored) Medium"></a>XSS(Stored) Medium</h3><h4 id="代码分析-5"><a href="#代码分析-5" class="headerlink" title="代码分析"></a>代码分析</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( <span class="variable">$_POST</span>[ <span class="string">&#x27;btnSign&#x27;</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    <span class="variable">$message</span> = trim( <span class="variable">$_POST</span>[ <span class="string">&#x27;mtxMessage&#x27;</span> ] ); </span><br><span class="line">    <span class="variable">$name</span>    = trim( <span class="variable">$_POST</span>[ <span class="string">&#x27;txtName&#x27;</span> ] ); </span><br><span class="line">    <span class="comment">// Sanitize message input </span></span><br><span class="line">    <span class="variable">$message</span> = strip_tags( addslashes( <span class="variable">$message</span> ) ); </span><br><span class="line">    <span class="variable">$message</span> = mysql_real_escape_string( <span class="variable">$message</span> ); </span><br><span class="line">    <span class="variable">$message</span> = htmlspecialchars( <span class="variable">$message</span> ); </span><br><span class="line">    <span class="comment">// Sanitize name input </span></span><br><span class="line">    <span class="variable">$name</span> = str_replace( <span class="string">&#x27;&lt;script&gt;&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="variable">$name</span> ); </span><br><span class="line">    <span class="variable">$name</span> = mysql_real_escape_string( <span class="variable">$name</span> ); </span><br><span class="line">    <span class="comment">// Update database </span></span><br><span class="line">    <span class="variable">$query</span>  = <span class="string">&quot;INSERT INTO guestbook ( comment, name ) VALUES ( &#x27;<span class="subst">$message</span>&#x27;, &#x27;<span class="subst">$name</span>&#x27; );&quot;</span>; </span><br><span class="line">    <span class="variable">$result</span> = mysql_query( <span class="variable">$query</span> ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">&#x27;&lt;pre&gt;&#x27;</span> . mysql_error() . <span class="string">&#x27;&lt;/pre&gt;&#x27;</span> ); </span><br><span class="line">    <span class="comment">//mysql_close(); </span></span><br><span class="line">&#125; </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>针对代码中提到的几个函数解释一下</p>
+<ol>
+<li>Strip_tags() 功能：删除字符串中的HTML、XML以及PHP标签，但保留<code>&lt;b&gt;</code>标签。</li>
+<li>addslashes() 功能：在字符串中出现预定字符（<code>&#39; &quot; / NULL</code>）之前添加反斜杠的字符串。</li>
+</ol>
+<p>从源代码可以看出对输入中的message参数使用了htmlspecialchars()函数进行标签转换，因此无法再通过message参数进行XSS注入，但是对name参数只进行形如XSS(Reflected) Medium中的过滤<code>&lt;script&gt;</code>字符串而已，因此存在存储型XSS漏洞。</p>
+<h4 id="漏洞利用-4"><a href="#漏洞利用-4" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>基本参见XSS(Reflected) Medium中的双写绕过、大小写混淆绕过两种办法，并且对name参数进行修改maxlength=30。</p>
+<ol>
+<li>双写绕过，输入<code>&lt;scr&lt;script&gt;ipt&gt;alert(/nzy/)&lt;/script&gt;</code></li>
+<li>大小写混淆绕过，输入<code>&lt;Script&gt;alert(/nzy/)&lt;/scirpt&gt;</code></li>
+</ol>
+<h3 id="XSS-Stored-High"><a href="#XSS-Stored-High" class="headerlink" title="XSS(Stored) High"></a>XSS(Stored) High</h3><h4 id="代码分析-6"><a href="#代码分析-6" class="headerlink" title="代码分析"></a>代码分析</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( <span class="variable">$_POST</span>[ <span class="string">&#x27;btnSign&#x27;</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    <span class="variable">$message</span> = trim( <span class="variable">$_POST</span>[ <span class="string">&#x27;mtxMessage&#x27;</span> ] ); </span><br><span class="line">    <span class="variable">$name</span>    = trim( <span class="variable">$_POST</span>[ <span class="string">&#x27;txtName&#x27;</span> ] ); </span><br><span class="line">    <span class="comment">// Sanitize message input </span></span><br><span class="line">    <span class="variable">$message</span> = strip_tags( addslashes( <span class="variable">$message</span> ) ); </span><br><span class="line">    <span class="variable">$message</span> = mysql_real_escape_string( <span class="variable">$message</span> ); </span><br><span class="line">    <span class="variable">$message</span> = htmlspecialchars( <span class="variable">$message</span> ); </span><br><span class="line">    <span class="comment">// Sanitize name input </span></span><br><span class="line">    <span class="variable">$name</span> = preg_replace( <span class="string">&#x27;/&lt;(.*)s(.*)c(.*)r(.*)i(.*)p(.*)t/i&#x27;</span>, <span class="string">&#x27;&#x27;</span>, <span class="variable">$name</span> ); </span><br><span class="line">    <span class="variable">$name</span> = mysql_real_escape_string( <span class="variable">$name</span> ); </span><br><span class="line">    <span class="comment">// Update database </span></span><br><span class="line">    <span class="variable">$query</span>  = <span class="string">&quot;INSERT INTO guestbook ( comment, name ) VALUES ( &#x27;<span class="subst">$message</span>&#x27;, &#x27;<span class="subst">$name</span>&#x27; );&quot;</span>; </span><br><span class="line">    <span class="variable">$result</span> = mysql_query( <span class="variable">$query</span> ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">&#x27;&lt;pre&gt;&#x27;</span> . mysql_error() . <span class="string">&#x27;&lt;/pre&gt;&#x27;</span> ); </span><br><span class="line">    <span class="comment">//mysql_close(); </span></span><br><span class="line">&#125; </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>从源代码可以看出这道题类似于XSS(Reflected) High，具体参见上文。</p>
+<h4 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h4><p>基本参见XSS(Reflected) High中的利用img、body等标签事件或者iframe等标签src来注入恶意的JS代码的办法，并且对name参数进行修改maxlength=30。</p>
+<p>输入<code>&lt;img src=1 onerror=alert(/nzy/)&gt;</code></p>
+<h3 id="XSS-Stored-Impossible"><a href="#XSS-Stored-Impossible" class="headerlink" title="XSS(Stored) Impossible"></a>XSS(Stored) Impossible</h3><h4 id="代码分析-7"><a href="#代码分析-7" class="headerlink" title="代码分析"></a>代码分析</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( <span class="variable">$_POST</span>[ <span class="string">&#x27;btnSign&#x27;</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( <span class="variable">$_REQUEST</span>[ <span class="string">&#x27;user_token&#x27;</span> ], <span class="variable">$_SESSION</span>[ <span class="string">&#x27;session_token&#x27;</span> ], <span class="string">&#x27;index.php&#x27;</span> ); </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    <span class="variable">$message</span> = trim( <span class="variable">$_POST</span>[ <span class="string">&#x27;mtxMessage&#x27;</span> ] ); </span><br><span class="line">    <span class="variable">$name</span>    = trim( <span class="variable">$_POST</span>[ <span class="string">&#x27;txtName&#x27;</span> ] ); </span><br><span class="line">    <span class="comment">// Sanitize message input </span></span><br><span class="line">    <span class="variable">$message</span> = stripslashes( <span class="variable">$message</span> ); </span><br><span class="line">    <span class="variable">$message</span> = mysql_real_escape_string( <span class="variable">$message</span> ); </span><br><span class="line">    <span class="variable">$message</span> = htmlspecialchars( <span class="variable">$message</span> ); </span><br><span class="line">    <span class="comment">// Sanitize name input </span></span><br><span class="line">    <span class="variable">$name</span> = stripslashes( <span class="variable">$name</span> ); </span><br><span class="line">    <span class="variable">$name</span> = mysql_real_escape_string( <span class="variable">$name</span> ); </span><br><span class="line">    <span class="variable">$name</span> = htmlspecialchars( <span class="variable">$name</span> ); </span><br><span class="line">    <span class="comment">// Update database </span></span><br><span class="line">    <span class="variable">$data</span> = <span class="variable">$db</span>-&gt;prepare( <span class="string">&#x27;INSERT INTO guestbook ( comment, name ) VALUES ( :message, :name );&#x27;</span> ); </span><br><span class="line">    <span class="variable">$data</span>-&gt;bindParam( <span class="string">&#x27;:message&#x27;</span>, <span class="variable">$message</span>, PDO::PARAM_STR ); </span><br><span class="line">    <span class="variable">$data</span>-&gt;bindParam( <span class="string">&#x27;:name&#x27;</span>, <span class="variable">$name</span>, PDO::PARAM_STR ); </span><br><span class="line">    <span class="variable">$data</span>-&gt;execute(); </span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>还是终极函数htmlspecialchars()函数的出场，解决XSS问题。有一点需要注意的是，如果htmlspecialchars()函数使用不当，攻击者就可以通过编码的方式绕过函数进行XSS注入，尤其是DOM型的XSS。</p>
+<p>htmlspecialchars()完整用法：<a target="_blank" rel="noopener" href="https://www.runoob.com/php/func-string-htmlspecialchars.html">https://www.runoob.com/php/func-string-htmlspecialchars.html</a></p>
+
+  
+  
+    
+    <div class='footer'>
+      
+      
+      
+        <div class='copyright'>
+          <blockquote>
+            
+              
+                <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+              
+            
+              
+                <p>本文永久链接是：<a href=http://example.com/2020/04/08/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%94%E3%80%81XSS%E5%9F%BA%E7%A1%80/>http://example.com/2020/04/08/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%94%E3%80%81XSS%E5%9F%BA%E7%A1%80/</a></p>
+              
+            
+          </blockquote>
+        </div>
+      
+      
+    </div>
+  
+  
+    
+
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-08T22:34:00+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Apr 8, 2020</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/XSS/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>XSS</p></a></div>
+
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://example.com/2020/04/08/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%94%E3%80%81XSS%E5%9F%BA%E7%A1%80/&title=【Web安全】五、XSS基础 - Hexo&summary=本文学习XSS基础以及DVWA模拟环境的几道例题。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://example.com/2020/04/08/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%94%E3%80%81XSS%E5%9F%BA%E7%A1%80/&title=【Web安全】五、XSS基础 - Hexo&summary=本文学习XSS基础以及DVWA模拟环境的几道例题。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://example.com/2020/04/08/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%94%E3%80%81XSS%E5%9F%BA%E7%A1%80/&title=【Web安全】五、XSS基础 - Hexo&summary=本文学习XSS基础以及DVWA模拟环境的几道例题。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </div>
+
+
+  
+  
+
+  
+    <div class="prev-next">
+      
+        <a class='prev' href='/2020/04/10/Kali%E5%B7%A5%E5%85%B7%E5%A4%A7%E5%85%A8/'>
+          <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>Kali工具大全</p>
+          <p class='content'>本文介绍渗透测试常用的Kali系统内置的一些工具。
+
+
+
+
+
+名称
+类型
+使用模式
+功能
+功能评价
+
+
+
+dmitry
+信息收集
+
+whois查询/子域名收集/端口扫描
+whois并不简单明了；...</p>
+        </a>
+      
+      
+        <a class='next' href='/2020/04/07/HTTP%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/'>
+          <p class='title'>HTTP协议简介<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>本文学习如何HTTP如何在客户端与服务器端通信，以及HTTP方法。
+
+
+HTTP协议在客户端和服务端之间的通信客户端：请求访问文本或图像等资源的一端。服务器端：提供资源响应的一端。
+
+注意：就一...</p>
+        </a>
+      
+    </div>
+  
+</article>
+
+
+  
+
+  <article class="post white-box reveal shadow" id="comments">
+    <p ct><i class='fas fa-comments'></i> 评论</p>
+    
+    <div id="valine_container" class="valine_thread">
+  <i class="fas fa-cog fa-spin fa-fw fa-2x"></i>
+</div>
+
+  </article>
+
+
+
+
+
+
+</div>
+<aside class='l_side'>
+  
+  
+    
+    
+
+
+
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%E4%BB%8B%E7%BB%8D%E4%B8%8E%E5%8E%9F%E7%90%86"><span class="toc-text">XSS介绍与原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%9E%8BXSS%E5%AE%9E%E6%88%98"><span class="toc-text">存储型XSS实战</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%9E%8BXSS%E6%B5%8B%E8%AF%95%E6%AD%A5%E9%AA%A4"><span class="toc-text">存储型XSS测试步骤</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E5%9E%8BXSS"><span class="toc-text">反射型XSS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86-1"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-text">代码解析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DOM%E5%9E%8BXSS"><span class="toc-text">DOM型XSS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#DOM%E7%AE%80%E4%BB%8B"><span class="toc-text">DOM简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E7%90%86-2"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%8F%E5%85%B8DOM%E5%9E%8BXSS%E7%A4%BA%E4%BE%8B"><span class="toc-text">经典DOM型XSS示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95"><span class="toc-text">常见方法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8XSS%E6%BC%8F%E6%B4%9E%E4%BF%AE%E5%A4%8D%E5%87%BD%E6%95%B0"><span class="toc-text">常用XSS漏洞修复函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%E8%BE%85%E5%8A%A9%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7"><span class="toc-text">XSS辅助测试工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Beef"><span class="toc-text">Beef</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#XSS%E2%80%99OR"><span class="toc-text">XSS’OR</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#XSS%E5%B9%B3%E5%8F%B0"><span class="toc-text">XSS平台</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IE-Tester"><span class="toc-text">IE Tester</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DVWA-XSS%E5%AE%9E%E6%88%98"><span class="toc-text">DVWA XSS实战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS-Reflected-Low"><span class="toc-text">XSS(Reflected) Low</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="toc-text">代码分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-text">漏洞利用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS-Reflected-Medium"><span class="toc-text">XSS(Reflected) Medium</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-1"><span class="toc-text">代码分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8-1"><span class="toc-text">漏洞利用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS-Reflected-High"><span class="toc-text">XSS(Reflected) High</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-2"><span class="toc-text">代码分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8-2"><span class="toc-text">漏洞利用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS-Reflected-Impossible"><span class="toc-text">XSS(Reflected) Impossible</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-3"><span class="toc-text">代码分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS-Stored-Low"><span class="toc-text">XSS(Stored) Low</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-4"><span class="toc-text">代码分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8-3"><span class="toc-text">漏洞利用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS-Stored-Medium"><span class="toc-text">XSS(Stored) Medium</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-5"><span class="toc-text">代码分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8-4"><span class="toc-text">漏洞利用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS-Stored-High"><span class="toc-text">XSS(Stored) High</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-6"><span class="toc-text">代码分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-text">漏洞分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS-Stored-Impossible"><span class="toc-text">XSS(Stored) Impossible</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90-7"><span class="toc-text">代码分析</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </section>
+
+
+  
+
+
+</aside>
+
+
+
+		  
+		  <!--此文件用来存放一些不方便取值的变量-->
+<!--思路大概是将值藏到重加载的区域内-->
+
+<script>
+  window.pdata={}
+  pdata.ispage=true;
+  pdata.postTitle="【Web安全】五、XSS基础";
+  pdata.commentPath="";
+  pdata.commentPlaceholder="";
+  // header 这里无论是否开启pjax都需要
+  var l_header=document.getElementById("l_header");
+  
+  l_header.classList.add("show");
+  
+  
+    // cover
+    var cover_wrapper=document.querySelector('.cover-wrapper');
+    
+    cover_wrapper.id="none";
+    cover_wrapper.style.display="none";
+    
+  
+</script>
+
+        </div>
+        
+  
+  <footer class="footer clearfix">
+    <br><br>
+    
+      
+        <div class="aplayer-container">
+          
+
+
+        </div>
+      
+    
+      
+        <br>
+        <div class="social-wrapper">
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      
+    
+      
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
+</div>
+      
+    
+      
+        
+          <div><p><span id="lc-sv">本站总访问量为 <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span> 次</span> <span id="lc-uv">访客数为 <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span> 人</span></p>
+</div>
+        
+      
+    
+      
+        Use
+        <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
+        as theme
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="/">Copyright © 2017-2020 XXX</a></p>
+
+        </div>
+      
+    
+  </footer>
+
+
+        <a id="s-top" class="fas fa-arrow-up fa-fw" href="javascript:void(0)"></a>
+      </div>
+    </div>
+    <div>
+      <script>
+/************这个文件存放不需要重载的全局变量和全局函数*********/
+window.volantis={};
+window.volantis.loadcss=document.getElementById("loadcss");
+/******************** Pjax ********************************/
+function VPjax(){
+	this.list=[] // 存放回调函数
+	this.start=()=>{
+	  for(var i=0;i<this.list.length;i++){
+		this.list[i].run();
+	  }
+	}
+	this.push=(fn,name)=>{
+		var f=new PjaxItem(fn,name);
+		this.list.push(f);
+	}
+	// 构造一个可以run的对象
+	function PjaxItem(fn,name){
+		// 函数名称
+		this.name = name || fn.name
+		// run方法
+		this.run=()=>{
+			fn()
+		}
+	}
+}
+volantis.pjax={}
+volantis.pjax.method={
+	complete: new VPjax(),
+	error: new VPjax(),
+	send: new VPjax()
+}
+volantis.pjax={
+	...volantis.pjax,
+	push: volantis.pjax.method.complete.push,
+	error: volantis.pjax.method.error.push,
+	send: volantis.pjax.method.send.push
+}
+/********************脚本懒加载函数********************************/
+// 已经加入了setTimeout
+function loadScript(src, cb) {
+	setTimeout(function() {
+		var HEAD = document.getElementsByTagName('head')[0] || document.documentElement;
+		var script = document.createElement('script');
+		script.setAttribute('type','text/javascript');
+		if (cb) script.onload = cb;
+		script.setAttribute('src', src);
+		HEAD.appendChild(script);
+	});
+}
+//https://github.com/filamentgroup/loadCSS
+var loadCSS = function( href, before, media, attributes ){
+	var doc = window.document;
+	var ss = doc.createElement( "link" );
+	var ref;
+	if( before ){
+		ref = before;
+	}
+	else {
+		var refs = ( doc.body || doc.getElementsByTagName( "head" )[ 0 ] ).childNodes;
+		ref = refs[ refs.length - 1];
+	}
+	var sheets = doc.styleSheets;
+	if( attributes ){
+		for( var attributeName in attributes ){
+			if( attributes.hasOwnProperty( attributeName ) ){
+				ss.setAttribute( attributeName, attributes[attributeName] );
+			}
+		}
+	}
+	ss.rel = "stylesheet";
+	ss.href = href;
+	ss.media = "only x";
+	function ready( cb ){
+		if( doc.body ){
+			return cb();
+		}
+		setTimeout(function(){
+			ready( cb );
+		});
+	}
+	ready( function(){
+		ref.parentNode.insertBefore( ss, ( before ? ref : ref.nextSibling ) );
+	});
+	var onloadcssdefined = function( cb ){
+		var resolvedHref = ss.href;
+		var i = sheets.length;
+		while( i-- ){
+			if( sheets[ i ].href === resolvedHref ){
+				return cb();
+			}
+		}
+		setTimeout(function() {
+			onloadcssdefined( cb );
+		});
+	};
+	function loadCB(){
+		if( ss.addEventListener ){
+			ss.removeEventListener( "load", loadCB );
+		}
+		ss.media = media || "all";
+	}
+	if( ss.addEventListener ){
+		ss.addEventListener( "load", loadCB);
+	}
+	ss.onloadcssdefined = onloadcssdefined;
+	onloadcssdefined( loadCB );
+	return ss;
+};
+</script>
+<script>
+  
+  loadCSS("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14/css/all.min.css", window.volantis.loadcss);
+  
+  
+  
+  
+</script>
+<!-- required -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5/dist/jquery.min.js"></script>
+
+<script>
+  function pjax_fancybox() {
+    $(".md .gallery").find("img").each(function () { //渲染 fancybox
+      var element = document.createElement("a"); // a 标签
+      $(element).attr("class", "fancybox");
+      $(element).attr("pjax-fancybox", "");  // 过滤 pjax
+      $(element).attr("href", $(this).attr("src"));
+      if ($(this).attr("data-original")) {
+        $(element).attr("href", $(this).attr("data-original"));
+      }
+      $(element).attr("data-fancybox", "images");
+      var caption = "";   // 描述信息
+      if ($(this).attr('alt')) {  // 判断当前页面是否存在描述信息
+        $(element).attr('data-caption', $(this).attr('alt'));
+        caption = $(this).attr('alt');
+      }
+      var div = document.createElement("div");
+      $(div).addClass("fancybox");
+      $(this).wrap(div); // 最外层套 div ，其实主要作用还是 class 样式
+      var span = document.createElement("span");
+      $(span).addClass("image-caption");
+      $(span).text(caption); // 加描述
+      $(this).after(span);  // 再套一层描述
+      $(this).wrap(element);  // 最后套 a 标签
+    })
+    $(".md .gallery").find("img").fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+      closeClick: true,
+      helpers: {
+        overlay: {closeClick: true}
+      },
+      buttons: [
+        "zoom",
+        "close"
+      ]
+    });
+  };
+  function SCload_fancybox() {
+    if ($(".md .gallery").find("img").length == 0) return;
+    loadCSS("https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css", document.getElementById("loadcss"));
+    loadScript('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', pjax_fancybox)
+  };
+  $(function () {
+    SCload_fancybox();
+  });
+  function Pjax_SCload_fancybox(){
+	if (typeof $.fancybox == "undefined") {
+	 SCload_fancybox();
+    } else {
+	 pjax_fancybox();
+    }
+  }
+  volantis.pjax.push(Pjax_SCload_fancybox)
+  volantis.pjax.send(()=>{
+      if (typeof $.fancybox != "undefined") {
+        $.fancybox.close();    // 关闭弹窗
+      }
+  },'fancybox')
+</script>
+
+
+<!-- internal -->
+
+
+
+
+<script>
+  function loadIssuesJS() {
+    if ($(".md").find(".issues-api").length == 0) return;
+	
+	  loadScript('/js/issues.js');
+	
+  };
+  $(function () {
+    loadIssuesJS();
+  });
+  volantis.pjax.push(()=>{
+	if (typeof IssuesAPI == "undefined") {
+	  loadIssuesJS();
+	}
+  },"IssuesJS")
+</script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 0
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    lazyLoadInstance.update();
+  });
+  document.addEventListener('pjax:complete', function () {
+    lazyLoadInstance.update();
+  });
+</script>
+
+
+
+
+  
+
+<script>
+  window.FPConfig = {
+	delay: 0,
+	ignoreKeywords: [],
+	maxRPS: 5,
+	hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+<script src="/js/valine.js"></script>
+
+
+<script>
+  function emoji(path, idx, ext) {
+    return path + "/" + path + "-" + idx + "." + ext;
+  }
+  var emojiMaps = {};
+  for (var i = 1; i <= 54; i++) {
+    emojiMaps['tieba-' + i] = emoji('tieba', i, 'png');
+  }
+  for (var i = 1; i <= 101; i++) {
+    emojiMaps['qq-' + i] = emoji('qq', i, 'gif');
+  }
+  for (var i = 1; i <= 116; i++) {
+    emojiMaps['aru-' + i] = emoji('aru', i, 'gif');
+  }
+  for (var i = 1; i <= 125; i++) {
+    emojiMaps['twemoji-' + i] = emoji('twemoji', i, 'png');
+  }
+  for (var i = 1; i <= 4; i++) {
+    emojiMaps['weibo-' + i] = emoji('weibo', i, 'png');
+  }
+  function pjax_valine() {
+    if(!document.querySelectorAll("#valine_container")[0])return;
+    let pagePlaceholder = pdata.commentPlaceholder || "快来评论吧~";
+    let path = pdata.commentPath;
+    if (path.length == 0) {
+      let defaultPath = '';
+      path = defaultPath || decodeURI(window.location.pathname);
+    }
+    var valine = new Valine();
+    valine.init(Object.assign({"path":null,"placeholder":"快来评论吧~","appId":null,"appKey":null,"meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+      el: '#valine_container',
+      path: path,
+      placeholder: pagePlaceholder,
+      emojiCDN: 'https://cdn.jsdelivr.net/gh/volantis-x/cdn-emoji/valine/',
+      emojiMaps: emojiMaps,
+    }))
+  }
+  $(function () {
+    pjax_valine();
+  });
+  volantis.pjax.push(pjax_valine);
+</script>
+
+
+
+
+
+
+  
+<script src="/js/app.js"></script>
+
+
+
+<!-- optional -->
+
+  <script>
+const SearchServiceimagePath="https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@master/img/";
+const ROOT =  ("/" || "/").endsWith('/') ? ("/" || "/") : ("//" || "/" );
+
+$('.input.u-search-input').one('focus',function(){
+	
+		loadScript('/js/search/hexo.js',setSearchService);
+	
+})
+
+function listenSearch(){
+  
+    customSearch = new HexoSearch({
+      imagePath: SearchServiceimagePath
+    });
+  
+}
+function setSearchService() {
+	listenSearch();
+	
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  <script defer>
+
+  const LCCounter = {
+    app_id: 'u9j57bwJod4EDmXWdxrwuqQT-MdYXbMMI',
+    app_key: 'jfHtEKVE24j0IVCGHbvuFClp',
+    custom_api_server: '',
+
+    // 查询存储的记录
+    getRecord(Counter, url, title) {
+      return new Promise(function (resolve, reject) {
+        Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({url})))
+          .then(resp => resp.json())
+          .then(({results, code, error}) => {
+            if (code === 401) {
+              throw error;
+            }
+            if (results && results.length > 0) {
+              var record = results[0];
+              resolve(record);
+            } else {
+              Counter('post', '/classes/Counter', {url, title: title, times: 0})
+                .then(resp => resp.json())
+                .then((record, error) => {
+                  if (error) {
+                    throw error;
+                  }
+                  resolve(record);
+                }).catch(error => {
+                console.error('Failed to create', error);
+                reject(error);
+              });
+            }
+          }).catch((error) => {
+          console.error('LeanCloud Counter Error:', error);
+          reject(error);
+        });
+      })
+    },
+
+    // 发起自增请求
+    increment(Counter, incrArr) {
+      return new Promise(function (resolve, reject) {
+        Counter('post', '/batch', {
+          "requests": incrArr
+        }).then((res) => {
+          res = res.json();
+          if (res.error) {
+            throw res.error;
+          }
+          resolve(res);
+        }).catch((error) => {
+          console.error('Failed to save visitor count', error);
+          reject(error);
+        });
+      });
+    },
+
+    // 构建自增请求体
+    buildIncrement(objectId) {
+      return {
+        "method": "PUT",
+        "path": `/1.1/classes/Counter/${ objectId }`,
+        "body": {
+          "times": {
+            '__op': 'Increment',
+            'amount': 1
+          }
+        }
+      }
+    },
+
+    // 校验是否为有效的 UV
+    validUV() {
+      var key = 'LeanCloudUVTimestamp';
+      var flag = localStorage.getItem(key);
+      if (flag) {
+        // 距离标记小于 24 小时则不计为 UV
+        if (new Date().getTime() - parseInt(flag) <= 86400000) {
+          return false;
+        }
+      }
+      localStorage.setItem(key, new Date().getTime().toString());
+      return true;
+    },
+
+    addCount(Counter) {
+      var enableIncr = '' === 'true' && window.location.hostname !== 'localhost';
+      enableIncr = true;
+      var getterArr = [];
+      var incrArr = [];
+      // 请求 PV 并自增
+      var pvCtn = document.querySelector('#lc-sv');
+      if (pvCtn || enableIncr) {
+        var pvGetter = this.getRecord(Counter, 'http://example.com' + '/#lc-sv', 'Visits').then((record) => {
+          incrArr.push(this.buildIncrement(record.objectId))
+          var eles = document.querySelectorAll('#lc-sv #number');
+          if (eles.length > 0) {
+            eles.forEach((el,index,array)=>{
+              el.innerText = record.times + 1;
+              if (pvCtn) {
+                pvCtn.style.display = 'inline';
+              }
+            })
+          }
+        });
+        getterArr.push(pvGetter);
+      }
+
+      // 请求 UV 并自增
+      var uvCtn = document.querySelector('#lc-uv');
+      if (uvCtn || enableIncr) {
+        var uvGetter = this.getRecord(Counter, 'http://example.com' + '/#lc-uv', 'Visitors').then((record) => {
+          var vuv = this.validUV();
+          vuv && incrArr.push(this.buildIncrement(record.objectId))
+          var eles = document.querySelectorAll('#lc-uv #number');
+          if (eles.length > 0) {
+            eles.forEach((el,index,array)=>{
+              el.innerText = record.times + (vuv ? 1 : 0);
+              if (uvCtn) {
+                uvCtn.style.display = 'inline';
+              }
+            })
+          }
+        });
+        getterArr.push(uvGetter);
+      }
+
+      // 请求文章的浏览数，如果是当前页面就自增
+      var allPV = document.querySelectorAll('#lc-pv');
+      if (allPV.length > 0 || enableIncr) {
+        for (i = 0; i < allPV.length; i++) {
+          let pv = allPV[i];
+          let title = pv.getAttribute('data-title');
+          var url = 'http://example.com' + pv.getAttribute('data-path');
+          if (url) {
+            var viewGetter = this.getRecord(Counter, url, title).then((record) => {
+              // 是当前页面就自增
+              let curPath = window.location.pathname;
+              if (curPath.includes('index.html')) {
+                curPath = curPath.substring(0, curPath.lastIndexOf('index.html'));
+              }
+              if (pv.getAttribute('data-path') == curPath) {
+                incrArr.push(this.buildIncrement(record.objectId));
+              }
+              if (pv) {
+                var ele = pv.querySelector('#lc-pv #number');
+                if (ele) {
+                  if (pv.getAttribute('data-path') == curPath) {
+                    ele.innerText = (record.times || 0) + 1;
+                  } else {
+                    ele.innerText = record.times || 0;
+                  }
+                  pv.style.display = 'inline';
+                }
+              }
+            });
+            getterArr.push(viewGetter);
+          }
+        }
+      }
+
+      // 如果启动计数自增，批量发起自增请求
+      if (enableIncr) {
+        Promise.all(getterArr).then(() => {
+          incrArr.length > 0 && this.increment(Counter, incrArr);
+        })
+      }
+
+    },
+
+
+    fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${ api_server }/1.1${ url }`, {
+          method,
+          headers: {
+            'X-LC-Id': this.app_id,
+            'X-LC-Key': this.app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      this.addCount(Counter);
+    },
+
+    refreshCounter() {
+      var api_server = this.app_id.slice(-9) !== '-MdYXbMMI' ? this.custom_api_server : `https://${ this.app_id.slice(0, 8).toLowerCase() }.api.lncldglobal.com`;
+      if (api_server) {
+        this.fetchData(api_server);
+      } else {
+        fetch('https://app-router.leancloud.cn/2/route?appId=' + this.app_id)
+          .then(resp => resp.json())
+          .then(({api_server}) => {
+            this.fetchData('https://' + api_server);
+          });
+      }
+    }
+
+  };
+
+  LCCounter.refreshCounter();
+
+  document.addEventListener('pjax:complete', function () {
+    LCCounter.refreshCounter();
+  });
+</script>
+
+
+
+
+  <script>
+const rootElement = document.documentElement;
+const darkModeStorageKey = "user-color-scheme";
+const rootElementDarkModeAttributeName = "data-user-color-scheme";
+
+const setLS = (k, v) => {
+    localStorage.setItem(k, v);
+};
+
+const removeLS = (k) => {
+    localStorage.removeItem(k);
+};
+
+const getLS = (k) => {
+    return localStorage.getItem(k);
+};
+
+const getModeFromCSSMediaQuery = () => {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
+const resetRootDarkModeAttributeAndLS = () => {
+  rootElement.removeAttribute(rootElementDarkModeAttributeName);
+  removeLS(darkModeStorageKey);
+};
+
+const validColorModeKeys = {
+  dark: true,
+  light: true,
+};
+
+const applyCustomDarkModeSettings = (mode) => {
+  const currentSetting = mode || getLS(darkModeStorageKey);
+
+  if (currentSetting === getModeFromCSSMediaQuery()) {
+    resetRootDarkModeAttributeAndLS();
+  } else if (validColorModeKeys[currentSetting]) {
+    rootElement.setAttribute(rootElementDarkModeAttributeName, currentSetting);
+  } else {
+    resetRootDarkModeAttributeAndLS();
+  }
+};
+
+const invertDarkModeObj = {
+  dark: "light",
+  light: "dark",
+};
+
+/**
+ * get target mode
+ */
+const toggleCustomDarkMode = () => {
+  let currentSetting = getLS(darkModeStorageKey);
+
+  if (validColorModeKeys[currentSetting]) {
+    currentSetting = invertDarkModeObj[currentSetting];
+  } else if (currentSetting === null) {
+    currentSetting = invertDarkModeObj[getModeFromCSSMediaQuery()];
+  } else {
+    return;
+  }
+  setLS(darkModeStorageKey, currentSetting);
+  return currentSetting;
+};
+
+/**
+ * bind click event for toggle button
+ */
+var btn=$("#wrapper .toggle-mode-btn,#rightmenu-wrapper .toggle-mode-btn");
+function bindToggleButton() {
+    btn.on('click',(e) => {
+      const mode = toggleCustomDarkMode();
+      applyCustomDarkModeSettings(mode);
+    });
+}
+
+applyCustomDarkModeSettings();
+document.addEventListener("DOMContentLoaded", bindToggleButton);
+volantis.pjax.push(bindToggleButton);
+volantis.pjax.send(()=>{
+	btn.unbind('click');
+},'toggle-mode-btn-unbind');
+</script>
+
+
+
+
+
+
+
+
+<script>
+function listennSidebarTOC() {
+  const navItems = document.querySelectorAll(".toc li");
+  if (!navItems.length) return;
+  const sections = [...navItems].map((element) => {
+    const link = element.querySelector(".toc-link");
+    const target = document.getElementById(
+      decodeURI(link.getAttribute("href")).replace("#", "")
+    );
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.scrollTo({
+		top: target.offsetTop + 100,
+		
+		behavior: "smooth"
+		
+	  });
+    });
+    return target;
+  });
+
+  function activateNavByIndex(target) {
+    if (target.classList.contains("active-current")) return;
+
+    document.querySelectorAll(".toc .active").forEach((element) => {
+      element.classList.remove("active", "active-current");
+    });
+    target.classList.add("active", "active-current");
+    let parent = target.parentNode;
+    while (!parent.matches(".toc")) {
+      if (parent.matches("li")) parent.classList.add("active");
+      parent = parent.parentNode;
+    }
+  }
+
+  function findIndex(entries) {
+    let index = 0;
+    let entry = entries[index];
+    if (entry.boundingClientRect.top > 0) {
+      index = sections.indexOf(entry.target);
+      return index === 0 ? 0 : index - 1;
+    }
+    for (; index < entries.length; index++) {
+      if (entries[index].boundingClientRect.top <= 0) {
+        entry = entries[index];
+      } else {
+        return sections.indexOf(entry.target);
+      }
+    }
+    return sections.indexOf(entry.target);
+  }
+
+  function createIntersectionObserver(marginTop) {
+    marginTop = Math.floor(marginTop + 10000);
+    let intersectionObserver = new IntersectionObserver(
+      (entries, observe) => {
+        let scrollHeight = document.documentElement.scrollHeight + 100;
+        if (scrollHeight > marginTop) {
+          observe.disconnect();
+          createIntersectionObserver(scrollHeight);
+          return;
+        }
+        let index = findIndex(entries);
+        activateNavByIndex(navItems[index]);
+      },
+      {
+        rootMargin: marginTop + "px 0px -100% 0px",
+        threshold: 0,
+      }
+    );
+    sections.forEach((element) => {
+      element && intersectionObserver.observe(element);
+    });
+  }
+  createIntersectionObserver(document.documentElement.scrollHeight);
+}
+
+document.addEventListener("DOMContentLoaded", listennSidebarTOC);
+document.addEventListener("pjax:success", listennSidebarTOC);
+</script>
+
+<!-- more -->
+
+ 
+	   
+	    
+
+
+<script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script>
+
+
+<script>
+    var pjax;
+    document.addEventListener('DOMContentLoaded', function () {
+      pjax = new Pjax({
+        elements: 'a[href]:not([href^="#"]):not([href="javascript:void(0)"]):not([pjax-fancybox])',
+        selectors: [
+          "title",
+          
+          "#pjax-container",
+          "#pjax-header-nav-list"
+        ],
+        cacheBust: false,   // url 地址追加时间戳，用以避免浏览器缓存
+        timeout: 5000
+      });
+    });
+
+    document.addEventListener('pjax:send', function (e) {
+      //window.stop(); // 相当于点击了浏览器的停止按钮
+
+      try {
+        var currentUrl = window.location.pathname;
+        var targetUrl = e.triggerElement.href;
+        var banUrl = [""];
+        if (banUrl[0] != "") {
+          banUrl.forEach(item => {
+            if(currentUrl.indexOf(item) != -1 || targetUrl.indexOf(item) != -1) {
+              window.location.href = targetUrl;
+            }
+          });
+        }
+      } catch (error) {}
+
+      window.subData = null; // 移除标题（用于一二级导航栏切换处）
+
+      volantis.$switcher.removeClass('active'); // 关闭移动端激活的搜索框
+      volantis.$header.removeClass('z_search-open'); // 关闭移动端激活的搜索框
+      volantis.$wrapper.removeClass('sub'); // 跳转页面时关闭二级导航
+
+      // 解绑事件 避免重复监听
+      volantis.$topBtn.unbind('click');
+      $('.menu a').unbind('click');
+      $(window).unbind('resize');
+      $(window).unbind('scroll');
+      $(document).unbind('scroll');
+      $(document).unbind('click');
+      $('body').unbind('click');
+	  // 使用 volantis.pjax.send 方法传入pjax:send回调函数 参见layout/_partial/scripts/global.ejs
+	  volantis.pjax.method.send.start();
+    });
+
+    document.addEventListener('pjax:complete', function () {
+      $('.nav-main').find('.list-v').not('.menu-phone').removeAttr("style",""); // 移除小尾巴的移除
+      $('.menu-phone.list-v').removeAttr("style",""); // 移除小尾巴的移除
+      $('script[data-pjax], .pjax-reload script').each(function () {
+        $(this).parent().append($(this).remove());
+      });
+      try{
+		// 使用 volantis.pjax.push 方法传入重载函数 参见layout/_partial/scripts/global.ejs
+		volantis.pjax.method.complete.start();
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    document.addEventListener('pjax:error', function (e) {
+	  // 使用 volantis.pjax.error 方法传入pjax:error回调函数 参见layout/_partial/scripts/global.ejs
+	  volantis.pjax.method.error.start();
+      window.location.href = e.triggerElement.href;
+    });
+</script>
+ 
+	  
+    </div>
+  </body>
+</html>

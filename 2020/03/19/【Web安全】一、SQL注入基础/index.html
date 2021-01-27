@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head hexo-theme='https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1'>
+  <meta charset="utf-8">
+  <!-- SEO相关 -->
+  
+    
+  
+  <!-- 渲染优化 -->
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel='dns-prefetch' href='https://cdn.jsdelivr.net'>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <link rel="preload" href="/css/first.css" as="style">
+  
+
+  <!-- 页面元数据 -->
+  
+  <title>【Web安全】一、SQL注入基础 - Hexo</title>
+  
+    <meta name="keywords" content="SQL,Web安全">
+  
+
+  
+    <meta name="description" content="本文学习SQL注入前的一些必备基础知识，包括了解Web应用框架、搭建后续学习所需的Sqli-Lab模拟靶场、解析SQL注入原理、学习MySQL基础知识（尤为重要的information_schema数据库）和熟悉SQL注入流程，最终使用手工注入方式解决Sqli-Labs/Less-1关卡。">
+  
+
+  <!-- feed -->
+  
+
+  <!-- import meta -->
+  
+
+  <!-- link -->
+  
+
+  <!-- import link -->
+  
+
+  
+    
+<link rel="stylesheet" href="/css/first.css">
+
+  
+
+  
+  <link rel="stylesheet" href="/css/style.css" media="print" onload="this.media='all';this.onload=null">
+  <noscript><link rel="stylesheet" href="/css/style.css"></noscript>
+  
+
+  <script id="loadcss"></script>
+
+  
+<script>
+if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMode))
+    document.write(
+	'<style>'+
+		'html{'+
+			'overflow-x: hidden !important;'+
+			'overflow-y: hidden !important;'+
+		'}'+
+		'.kill-ie{'+
+			'text-align:center;'+
+			'height: 100%;'+
+			'margin-top: 15%;'+
+			'margin-bottom: 5500%;'+
+		'}'+
+	'</style>'+
+    '<div class="kill-ie">'+
+        '<h1><b>抱歉，您的浏览器无法访问本站</b></h1>'+
+        '<h3>微软已经于2016年终止了对 Internet Explorer (IE) 10 及更早版本的支持，<br/>'+
+        '继续使用存在极大的安全隐患，请使用当代主流的浏览器进行访问。</h3><br/>'+
+        '<a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-cn/WindowsForBusiness/End-of-IE-support"><strong>了解详情 ></strong></a>'+
+    '</div>');
+</script>
+
+
+<noscript>
+	<style>
+		html{
+			overflow-x: hidden !important;
+			overflow-y: hidden !important;
+		}
+		.kill-noscript{
+			text-align:center;
+			height: 100%;
+			margin-top: 15%;
+			margin-bottom: 5500%;
+		}
+	</style>
+    <div class="kill-noscript">
+        <h1><b>抱歉，您的浏览器无法访问本站</b></h1>
+        <h3>本页面需要浏览器支持（启用）JavaScript</h3><br/>
+        <a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=启用JavaScript"><strong>了解详情 ></strong></a>
+    </div>
+</noscript>
+
+</head>
+
+  <body>
+    
+
+<header id="l_header" class="l_header auto shadow blur show" style='opacity: 0' >
+  <div class='container'>
+  <div id='wrapper'>
+    <div class='nav-sub'>
+      <p class="title"></p>
+      <ul class='switcher nav-list-h m-phone' id="pjax-header-nav-list">
+        <li><a id="s-comment" class="fas fa-comments fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+          <li><a id="s-toc" class="s-toc fas fa-list fa-fw" target="_self" href='javascript:void(0)'></a></li>
+        
+      </ul>
+    </div>
+		<div class="nav-main">
+      
+        
+        <a class="title flat-box" target="_self" href='/'>
+          
+            <img no-lazy class='logo' src='https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png'/>
+          
+          
+          
+        </a>
+      
+
+			<div class='menu navigation'>
+				<ul class='nav-list-h m-pc'>
+          
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-rss fa-fw'></i>博客
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/tags/
+                  
+                  
+                  
+                    id="tags"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>标签
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/friends/
+                  
+                  
+                  
+                    id="friends"
+                  >
+                  <i class='fas fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+          
+            
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+          
+				</ul>
+			</div>
+
+      <div class="m_search">
+        <form name="searchform" class="form u-search-form">
+          <i class="icon fas fa-search fa-fw"></i>
+          <input type="text" class="input u-search-input" placeholder="Search..." />
+        </form>
+      </div>
+
+			<ul class='switcher nav-list-h m-phone'>
+				
+					<li><a class="s-search fas fa-search fa-fw" target="_self" href='javascript:void(0)'></a></li>
+				
+				<li>
+          <a class="s-menu fas fa-bars fa-fw" target="_self" href='javascript:void(0)'></a>
+          <ul class="menu-phone list-v navigation white-box">
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/
+                  
+                  
+                  
+                    id="home"
+                  >
+                  <i class='fas fa-rss fa-fw'></i>博客
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/categories/
+                  
+                  
+                  
+                    id="categories"
+                  >
+                  <i class='fas fa-folder-open fa-fw'></i>分类
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/tags/
+                  
+                  
+                  
+                    id="tags"
+                  >
+                  <i class='fas fa-tags fa-fw'></i>标签
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/archives/
+                  
+                  
+                  
+                    id="archives"
+                  >
+                  <i class='fas fa-archive fa-fw'></i>归档
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/friends/
+                  
+                  
+                  
+                    id="friends"
+                  >
+                  <i class='fas fa-link fa-fw'></i>友链
+                </a>
+                
+              </li>
+            
+          
+            
+              
+            
+              <li>
+                <a class="menuitem flat-box faa-parent animated-hover" href=/about/
+                  
+                  
+                  
+                    id="about"
+                  >
+                  <i class='fas fa-info-circle fa-fw'></i>关于
+                </a>
+                
+              </li>
+            
+          
+            
+          </ul>
+        </li>
+			</ul>
+		</div>
+	</div>
+  </div>
+</header>
+
+    <div id="l_body">
+      <div id="l_cover">
+  
+    
+        <div id="full" class='cover-wrapper post dock' style="display: none;">
+          
+            <div class='cover-bg lazyload placeholder' data-bg="https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture"></div>
+          
+          <div class='cover-body'>
+  <div class='top'>
+    
+    
+      <p class="title">Volantis</p>
+    
+    
+  </div>
+  <div class='bottom'>
+    <div class='menu navigation'>
+      <div class='list-h'>
+        
+          
+            <a href="/v4/getting-started/"
+              
+              
+              id="v4getting-started">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f5c3.svg'><p>文档</p>
+            </a>
+          
+            <a href="/faqs/"
+              
+              
+              id="faqs">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f516.svg'><p>帮助</p>
+            </a>
+          
+            <a href="/examples/"
+              
+              
+              id="examples">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f396.svg'><p>示例</p>
+            </a>
+          
+            <a href="/contributors/"
+              
+              
+              id="contributors">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f389.svg'><p>社区</p>
+            </a>
+          
+            <a href="/archives/"
+              
+              
+              id="archives">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f4f0.svg'><p>博客</p>
+            </a>
+          
+            <a target="_blank" rel="noopener" href="https://github.com/volantis-x/hexo-theme-volantis/"
+              
+              
+              id="https:githubcomvolantis-xhexo-theme-volantis">
+              <img src='https://cdn.jsdelivr.net/gh/twitter/twemoji@13.0/assets/svg/1f9ec.svg'><p>源码</p>
+            </a>
+          
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+          <div id="scroll-down" style="display: none;"><i class="fa fa-chevron-down scroll-down-effects"></i></div>
+        </div>
+    
+  
+  </div>
+
+      <div id="safearea">
+        <div class="body-wrapper" id="pjax-container">
+          
+
+<div class='l_main'>
+  <article class="article post white-box reveal md shadow article-type-post" id="post" itemscope itemprop="blogPost">
+  
+
+
+  
+  <div class="article-meta" id="top">
+    
+    
+    
+      <h1 class="title">
+        【Web安全】一、SQL注入基础
+      </h1>
+      <div class='new-meta-box'>
+        
+          
+            
+<div class='new-meta-item author'>
+  <a class='author' href="/" rel="nofollow">
+    <img no-lazy src="">
+    <p>请设置文章作者</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  <div class='new-meta-item category'>
+    <a class='notlink'>
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="sep"></span><a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web%E5%AE%89%E5%85%A8/">Web安全</a>
+    </a>
+  </div>
+
+
+          
+        
+          
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Mar 19, 2020</p>
+  </a>
+</div>
+
+          
+        
+          
+            
+  <div class="new-meta-item browse leancloud">
+    <a class='notlink'>
+      
+      <div id="lc-pv" data-title="【Web安全】一、SQL注入基础" data-path="/2020/03/19/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%B8%80%E3%80%81SQL%E6%B3%A8%E5%85%A5%E5%9F%BA%E7%A1%80/">
+        <i class="fas fa-eye fa-fw" aria-hidden="true"></i>
+        <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
+        次浏览
+      </div>
+    </a>
+  </div>
+
+
+          
+        
+      </div>
+    
+  </div>
+
+
+  
+  
+  <p>本文学习SQL注入前的一些必备基础知识，包括了解Web应用框架、搭建后续学习所需的Sqli-Lab模拟靶场、解析SQL注入原理、学习MySQL基础知识（尤为重要的information_schema数据库）和熟悉SQL注入流程，最终使用手工注入方式解决Sqli-Labs/Less-1关卡。</p>
+<a id="more"></a>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>随着Web2.0、社交网络、微博等等一系列新型的互联网产品的诞生，基于Web环境的互联网应用越来越广泛，企业信息化的过程中各种应用都架设在<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Web/150564">Web</a>平台上，Web业务的迅速发展也引起黑客们的强烈关注，接踵而至的就是Web安全威胁的凸显，黑客利用网站操作系统的漏洞和Web服务程序的SQL<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E">注入漏洞</a>等得到<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Web%E6%9C%8D%E5%8A%A1%E5%99%A8/8390210">Web服务器</a>的控制权限，轻则篡改网页内容，重则窃取重要内部数据，更为严重的则是在网页中植入<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%81%B6%E6%84%8F%E4%BB%A3%E7%A0%81/325864">恶意代码</a>，使得网站访问者受到侵害。</p>
+<p>【Web安全】作为一个系列会在本博客连载，大体上从SQL注入、文件上传漏洞、XSS漏洞、代码审计、PHPThink、Python安全编程等方面来解开漏洞的真面目，以及组建模拟环境来训练。</p>
+<hr>
+<h2 id="一、WEB应用框架分析"><a href="#一、WEB应用框架分析" class="headerlink" title="一、WEB应用框架分析"></a>一、WEB应用框架分析</h2><p><strong>Web应用老框架</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32dh9fejj315q0pq479.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32dh9fejj315q0pq479.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200317234659423"></p>
+<p><strong>Web应用新框架</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32dx1249j316i0q47c5.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32dx1249j316i0q47c5.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200317234850985"></p>
+<h2 id="二、SQL注入环境搭建"><a href="#二、SQL注入环境搭建" class="headerlink" title="二、SQL注入环境搭建"></a>二、SQL注入环境搭建</h2><p>使用Docker搭建Sqli-labs靶场。（略）</p>
+<h2 id="三、SQL注入原理"><a href="#三、SQL注入原理" class="headerlink" title="三、SQL注入原理"></a>三、SQL注入原理</h2><p> SQL全称<strong>结构化查询语言StructuredQueryLanguage</strong>，其功能包括查询、操纵、定义和控制四个方面，是一个通用的功能机枪的关系数据库标准语言。</p>
+<p>在B/S模式中，开发者在编写代码时没有对用户的输入数据或者是页面中所携带的信息进行必要的合法性判断。攻击者利用这个机会<strong>提交一段数据库查询代码</strong>，根据程序返回的结果，就可以获得一些数据库信息。</p>
+<p><em>访问网站查询数据的流程</em><br> <img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32eci02bj31i40gcao7.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32eci02bj31i40gcao7.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200317235316671"></p>
+<p>例如对代码进行拼接</p>
+<p><code>http://127.0.0.1:8999/Less-1/?id=1 union select 1,version(),3%23</code> 在查询id=1的同时也可以查看数据库的系统版本。注：%23 -&gt; #</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32efzu5ej31ne0fmn06.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32efzu5ej31ne0fmn06.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318001249883"></p>
+<h2 id="四、MySQL内置函数"><a href="#四、MySQL内置函数" class="headerlink" title="四、MySQL内置函数"></a>四、MySQL内置函数</h2><p>主要说明一下SQL注入过程中常用函数。</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32el3d3wj31g00q4h1y.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32el3d3wj31g00q4h1y.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318001443867"></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32er51syj31rw0pq1ke.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32er51syj31rw0pq1ke.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318001544628"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#部分函数使用说明</span><br><span class="line">Concat(‘str1’,’str2’)</span><br><span class="line">Concat_ws(‘:’,’str1’,’str2’)</span><br><span class="line">Group_concat(‘sr1’,’str2’,’str3’...)</span><br><span class="line"><span class="keyword">Select</span> ‘words’ <span class="keyword">into</span> outfile ‘<span class="operator">/</span>path’</span><br><span class="line"><span class="keyword">Select</span> load_file(‘path’)</span><br><span class="line">substr(‘str1’,index1,length)</span><br></pre></td></tr></table></figure>
+<p>测试URL：<code>http://127.0.0.1/sql/Less-1/?id=-1%27%20union%20select%201,@@version_compile_os,@@datadir%23</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32evxj8vj31nq0letio.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32evxj8vj31nq0letio.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318001731072"></p>
+<h5 id="逻辑运算符：-AND-OR"><a href="#逻辑运算符：-AND-OR" class="headerlink" title="逻辑运算符： AND OR"></a>逻辑运算符： AND OR</h5><p><strong>注意：运算顺序从左到右</strong> </p>
+<p><code>Select * from user where id =1 or 1=1 </code>返回永远为真</p>
+<p>登陆处的SQL语句：<code>select * from users where username=’admin’ and possword=’passwd’</code></p>
+<p>万能登录用户名：<code>’ or ‘1’ = ‘1</code></p>
+<p>测试URL：<code>select * from users where username=’’ or ‘1’ = ‘1’ and possword=’’ or ‘1’ = ‘1’</code></p>
+<p>判断返回值列数<code>and 1=2 union select 1,2,3--+</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32f19vn8j31ne0dkmzq.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32f19vn8j31ne0dkmzq.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318131030436"></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32f53b4vj31nm0g2jv8.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32f53b4vj31nm0g2jv8.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318131015092"></p>
+<p><code>select user() regexp &#39;&#39;^r0&#39;</code></p>
+<p>时间延时常用语句<code>if(ascii(substr(select user(),1,1))=114,0,sleep(5))</code> </p>
+<h2 id="五、SQL注入流程"><a href="#五、SQL注入流程" class="headerlink" title="五、SQL注入流程"></a>五、SQL注入流程</h2><h4 id="寻找SQL注入点"><a href="#寻找SQL注入点" class="headerlink" title="寻找SQL注入点"></a>寻找SQL注入点</h4><ol>
+<li>目标搜集<ul>
+<li>无特定目标：<code>inurl:php?id=</code></li>
+<li>有特定目标：<code>inurl:php?id= site:target.com</code></li>
+<li>工具爬取： spider（对搜索到的网站进行爬取，识别所有的动态页面）</li>
+</ul>
+</li>
+<li>注入识别<ul>
+<li>手工简单识别<ul>
+<li><code>&#39;</code></li>
+<li><code>and 1=1 / and 1=2</code></li>
+<li><code>and &#39;1&#39;=&#39;1 / and &#39;1&#39;=&#39;2</code></li>
+<li><code>and 1 like 1 / and 1 like 2</code></li>
+</ul>
+</li>
+<li>工具识别<ul>
+<li>Sqlmap -m filename（filename保存检测目标）</li>
+<li>sqlmap -crawl（对目标网站进行爬取并依次进行测试）</li>
+</ul>
+</li>
+<li>高级识别<ul>
+<li>扩展识别广度和深度<ul>
+<li>Sqlmap –level 增加测试级别，对header中相关参数进行测试</li>
+<li>sqlmap -r filename</li>
+</ul>
+</li>
+<li>利用工具提高识别效率<ul>
+<li>BurpSuite + SqlMAo</li>
+<li>BurpSuite拦截所有浏览器访问提交的数据</li>
+<li>BurpSuite扩展插件直接调用SQLmap进行测试</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>代码审计（白盒测试）<ul>
+<li>搜索关键代码和函数<img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32fatx2fj31an0u0b2b.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32fatx2fj31an0u0b2b.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318135820411"></li>
+<li>梳理业务流程</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="SQL注入流程"><a href="#SQL注入流程" class="headerlink" title="SQL注入流程"></a>SQL注入流程</h4><ul>
+<li><p>信息收集（利用数据库内置函数）</p>
+<ol>
+<li><p>数据库类型 报错页面<img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32fhzejej31nu0ecad3.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32fhzejej31nu0ecad3.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318141122485"></p>
+</li>
+<li><p>数据库版本 @@version、version()</p>
+</li>
+<li><p>数据库用户 user()、SYSTEM_USER</p>
+</li>
+<li><p>数据库权限 super_priv、IS_SRVROLEMEMBER</p>
+</li>
+</ol>
+</li>
+<li><p>数据获取：获取库信息、表信息、列信息、数据信息</p>
+<ol>
+<li>通过语句查询 </li>
+<li>通过暴力破解<code>select * from &#39;爆破字段&#39;</code></li>
+</ol>
+</li>
+<li><p>提权</p>
+<ol>
+<li>执行命令 SQLServer权限</li>
+<li>读文件 读取中间件配置文件、数据库配置文件（可能存在账号密码等信息）<br>读取数据库配置文件示例<br><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32fm795fj32490u0tlj.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32fm795fj32490u0tlj.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319125926981"><br>读取系统配置文件<img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32fpyn8cj319y0u0wun.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32fpyn8cj319y0u0wun.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319130207545"></li>
+</ol>
+<ol start="3">
+<li>写文件 写webshell到网站目录</li>
+</ol>
+</li>
+</ul>
+<h2 id="六-、SQL手工注入方法"><a href="#六-、SQL手工注入方法" class="headerlink" title="六 、SQL手工注入方法"></a>六 、SQL手工注入方法</h2><h4 id="MySQL数据库结构（重点：SQL层）"><a href="#MySQL数据库结构（重点：SQL层）" class="headerlink" title="MySQL数据库结构（重点：SQL层）"></a>MySQL数据库结构（重点：SQL层）</h4><p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32fu6vpqj31jm0iawnp.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32fu6vpqj31jm0iawnp.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt=" "></p>
+<p>SQL层具有的功能：解析器、查询执行、授权、查询告诉缓存、优化器、查询日志记录</p>
+<ol>
+<li>判断语法、语句、语义</li>
+<li>数据库对象授权情况判断</li>
+<li>解析：将SQL语句解析成执行计划，运行执行计划，生成找数据的方式</li>
+<li>优化：基于算法从执行计划中选择代价最小的</li>
+<li>执行：执行计划</li>
+<li>将取出的数据抽象成表</li>
+<li>查询缓存：缓存之前查询的数据</li>
+</ol>
+<p><strong>MySQL内置库：</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32fxvz9hj31jg0rsh6y.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32fxvz9hj31jg0rsh6y.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318231903481"></p>
+<p>通过<code>information_schema</code>我们可以窥透整个MySQL的运行情况，也可以查看到数据库中所有的数据信息。</p>
+<p><strong>查询数据核心语法：（十分重要！！！）</strong></p>
+<table>
+<thead>
+<tr>
+<th>功能名称</th>
+<th>查询语句</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查库</td>
+<td>select schema_name from information_schema.schemata</td>
+</tr>
+<tr>
+<td>查表</td>
+<td>select table_name from information_schema.tables where table_schema=库名</td>
+</tr>
+<tr>
+<td>查列</td>
+<td>select column_name from information_schema.columns where table_name=表名</td>
+</tr>
+<tr>
+<td>查数据</td>
+<td>select 列名 from 库名.表名</td>
+</tr>
+</tbody></table>
+<h4 id="MySQL手工注入方法"><a href="#MySQL手工注入方法" class="headerlink" title="MySQL手工注入方法"></a>MySQL手工注入方法</h4><ol>
+<li>查库示例</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32g5y9naj315g0gikjl.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32g5y9naj315g0gikjl.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318232233796"></p>
+<ol start="2">
+<li>查表示例</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32g9vqdqj31i60gg1ky.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32g9vqdqj31i60gg1ky.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318232812406"></p>
+<ol start="3">
+<li>查列示例</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32ghlmmsj31hw0fkagr.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32ghlmmsj31hw0fkagr.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318232942151"><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32gi1zmaj31am0ggqv5.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32gi1zmaj31am0ggqv5.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318233721606"></p>
+<ol start="4">
+<li>查数据示例</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32glz47zj31bw0sg4qr.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32glz47zj31bw0sg4qr.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200318233136191"></p>
+<p><strong>需要注意的地方</strong></p>
+<ol>
+<li>所有类型sql注入，都是基于查库、表、列语句</li>
+<li>如果数据太多，导致无法返回查询结果（可利用limit限定返回的数量或位置；用concat拼接）</li>
+</ol>
+<p>利用limit限定返回的数量或位置示例：</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32gq3vv3j31460bo4qp.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32gq3vv3j31460bo4qp.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319114847612"></p>
+<p>利用concat拼接示例：</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32gu5xqmj31ag0c0b29.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32gu5xqmj31ag0c0b29.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319115155353"></p>
+<ol start="3">
+<li>借助BurpSuite快速获取数据–布尔盲注</li>
+</ol>
+<h4 id="实战：SQLi-Labs-Less-1解题"><a href="#实战：SQLi-Labs-Less-1解题" class="headerlink" title="实战：SQLi-Labs/Less-1解题"></a>实战：SQLi-Labs/Less-1解题</h4><blockquote>
+<ol>
+<li>测试是否存在sql注入</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32h18krhj31nm0emtbc.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32h18krhj31nm0emtbc.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319115445998"></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32h4tooqj31nw0c2goe.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32h4tooqj31nw0c2goe.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319115459004"></p>
+<p>由于页面报错，因此很有可能是注入点。</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32hayu1ij31no0f0ju2.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32hayu1ij31no0f0ju2.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319115627009"><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32hbgfqwj31ng0dg0uy.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32hbgfqwj31ng0dg0uy.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319115648417"></p>
+<p>通过上述测试，可以判断该页面存在SQL注入漏洞。</p>
+<ol start="2">
+<li>判断字段长度</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32hhkmpdj31ne0dyq5e.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32hhkmpdj31ne0dyq5e.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319115837016"><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32j3wcufj31nc0bwdi4.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32j3wcufj31nc0bwdi4.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="1-29"></p>
+<p>由此可知，该字段长度为3</p>
+<ol start="3">
+<li>利用union联合查询库名<br><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32j7z8aej31ne0eqjvt.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32j7z8aej31ne0eqjvt.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319120204847"><br><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32jdt1h6j31nk0eugoa.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32jdt1h6j31nk0eugoa.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319120229833"></li>
+</ol>
+<p>因此可以在图示2,34位置带入查询信息的语句</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32jjnjlkj31no0c6ju5.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32jjnjlkj31no0c6ju5.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319120614135"></p>
+<p>回显信息说明返回的内容太多，利用<code>limit</code>限定返回的数量或位置和利用<code>group_concat()</code>拼接</p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32jmwvtdj31nk0emq5z.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32jmwvtdj31nk0emq5z.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319120829426"></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32jqyueaj31nm0fe426.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32jqyueaj31nm0fe426.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319121016551"></p>
+<ol start="4">
+<li>利用union联合查询表名</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32jykat3j31ng0geaeh.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32jykat3j31ng0geaeh.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319121853542"><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32jyw8j8j31nm0i4q71.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32jyw8j8j31nm0i4q71.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319124834238"></p>
+<ol start="5">
+<li>利用union联合查询列名</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32k5k9mlj31nk0fmq6e.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32k5k9mlj31nk0fmq6e.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319122918966"></p>
+<ol start="6">
+<li>利用union联合查询数据</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32kaeu3xj31ni0g6q7d.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32kaeu3xj31ni0g6q7d.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319123535634"></p>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32kfwmi1j31nm0g8n0e.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32kfwmi1j31nm0g8n0e.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319125336380"></p>
+</blockquote>
+<h2 id="七、两款工具简介"><a href="#七、两款工具简介" class="headerlink" title="七、两款工具简介"></a>七、两款工具简介</h2><h4 id="工具一：HackBar"><a href="#工具一：HackBar" class="headerlink" title="工具一：HackBar"></a>工具一：HackBar</h4><p><strong>HackBar</strong>：一款Firefox浏览器下的黑客插件 安全人员可以十分方便的用来进行Sql注入以及Xss测试或进行各种编码功能等。</p>
+<p>安装教程：</p>
+<p>由于是收费软件，特此提供破解版本，侵删。链接: <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1wCT5sbchTEv1SPLyGgRSeQ">https://pan.baidu.com/s/1wCT5sbchTEv1SPLyGgRSeQ</a> 提取码: 3i33</p>
+<ol>
+<li>添加下载xpi文件</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32knmwhnj31aa0u0th0.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32knmwhnj31aa0u0th0.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319151552809"></p>
+<ol start="2">
+<li>关闭HackBar自动更新（更新之后版本要收费）</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32kqtqolj312u0me0vh.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32kqtqolj312u0me0vh.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319151704688"></p>
+<ol start="3">
+<li>按F12即可使用工具</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gd32ktca8gj31os0gc77k.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/00831rSTly1gd32ktca8gj31os0gc77k.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="image-20200319151747310"></p>
+<p>​    我们可以点击Load URL将URL栏的地址加载到HackBar窗口中，可以利用HackBar工具栏提供了很多web开发相关的命令，像urlencode,urldecode等常见命令。</p>
+<h4 id="工具二：SQLmap（详解待补）"><a href="#工具二：SQLmap（详解待补）" class="headerlink" title="工具二：SQLmap（详解待补）"></a>工具二：SQLmap（详解待补）</h4><blockquote>
+<p> <strong>SQLmap</strong>是一个自动化的SQL注入工具，其主要功能是扫描，发现并利用给定的URL的SQL注入漏洞，目前支持的数据库是MySQL，Oracle，PostgreSQL，Microsoft SQL Server，Microsoft Acess，IBM DB2，SQLLite，Firebird，Sybase和SAP MaxDB……SQLmap采用几种独特的SQL注入技术，分别是盲推理SQL注入，UNION查询SQL注入，对查询和盲注。其广泛的功能和选项包括数据库指纹，枚举，数据库提取，访问目标文件系统，并在获取完全操作权限时实行任意命令。</p>
+</blockquote>
+
+  
+  
+    
+    <div class='footer'>
+      
+      
+      
+        <div class='copyright'>
+          <blockquote>
+            
+              
+                <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+              
+            
+              
+                <p>本文永久链接是：<a href=http://example.com/2020/03/19/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%B8%80%E3%80%81SQL%E6%B3%A8%E5%85%A5%E5%9F%BA%E7%A1%80/>http://example.com/2020/03/19/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%B8%80%E3%80%81SQL%E6%B3%A8%E5%85%A5%E5%9F%BA%E7%A1%80/</a></p>
+              
+            
+          </blockquote>
+        </div>
+      
+      
+    </div>
+  
+  
+    
+
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2020-04-07T16:01:15+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Apr 7, 2020</p>
+  </a>
+</div>
+
+        
+      
+        
+          
+  
+  <div class="new-meta-item meta-tags"><a class="tag" href="/tags/SQL/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>SQL</p></a></div> <div class="new-meta-item meta-tags"><a class="tag" href="/tags/Web%E5%AE%89%E5%85%A8/" rel="nofollow"><i class="fas fa-hashtag fa-fw" aria-hidden="true"></i><p>Web安全</p></a></div>
+
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
+    
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://example.com/2020/03/19/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%B8%80%E3%80%81SQL%E6%B3%A8%E5%85%A5%E5%9F%BA%E7%A1%80/&title=【Web安全】一、SQL注入基础 - Hexo&summary=本文学习SQL注入前的一些必备基础知识，包括了解Web应用框架、搭建后续学习所需的Sqli-Lab模拟靶场、解析SQL注入原理、学习MySQL基础知识（尤为重要的information_schema数据库）和熟悉SQL注入流程，最终使用手工注入方式解决Sqli-Labs/Less-1关卡。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://example.com/2020/03/19/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%B8%80%E3%80%81SQL%E6%B3%A8%E5%85%A5%E5%9F%BA%E7%A1%80/&title=【Web安全】一、SQL注入基础 - Hexo&summary=本文学习SQL注入前的一些必备基础知识，包括了解Web应用框架、搭建后续学习所需的Sqli-Lab模拟靶场、解析SQL注入原理、学习MySQL基础知识（尤为重要的information_schema数据库）和熟悉SQL注入流程，最终使用手工注入方式解决Sqli-Labs/Less-1关卡。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://example.com/2020/03/19/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%B8%80%E3%80%81SQL%E6%B3%A8%E5%85%A5%E5%9F%BA%E7%A1%80/&title=【Web安全】一、SQL注入基础 - Hexo&summary=本文学习SQL注入前的一些必备基础知识，包括了解Web应用框架、搭建后续学习所需的Sqli-Lab模拟靶场、解析SQL注入原理、学习MySQL基础知识（尤为重要的information_schema数据库）和熟悉SQL注入流程，最终使用手工注入方式解决Sqli-Labs/Less-1关卡。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+
+
+        
+      
+    </div>
+  </div>
+
+
+  
+  
+
+  
+    <div class="prev-next">
+      
+        <a class='prev' href='/2020/03/22/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%8C%E3%80%81SQL%E6%B3%A8%E5%85%A5%E8%AF%AD%E6%B3%95%E7%B1%BB%E5%9E%8B/'>
+          <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>【Web安全】二、SQL注入语法类型</p>
+          <p class='content'>本文学习SQL注入语法类型，主要介绍了两种注入语法，分别是UNION联合查询注入和报错注入，每一部分都会涉及到Sqli-Labs模拟实战环境。
+
+一、UNION查询注入1.1 UNION介绍
+U...</p>
+        </a>
+      
+      
+    </div>
+  
+</article>
+
+
+  
+
+  <article class="post white-box reveal shadow" id="comments">
+    <p ct><i class='fas fa-comments'></i> 评论</p>
+    
+    <div id="valine_container" class="valine_thread">
+  <i class="fas fa-cog fa-spin fa-fw fa-2x"></i>
+</div>
+
+  </article>
+
+
+
+
+
+
+</div>
+<aside class='l_side'>
+  
+  
+    
+    
+
+
+
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81WEB%E5%BA%94%E7%94%A8%E6%A1%86%E6%9E%B6%E5%88%86%E6%9E%90"><span class="toc-text">一、WEB应用框架分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81SQL%E6%B3%A8%E5%85%A5%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">二、SQL注入环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81SQL%E6%B3%A8%E5%85%A5%E5%8E%9F%E7%90%86"><span class="toc-text">三、SQL注入原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81MySQL%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0"><span class="toc-text">四、MySQL内置函数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6%EF%BC%9A-AND-OR"><span class="toc-text">逻辑运算符： AND OR</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81SQL%E6%B3%A8%E5%85%A5%E6%B5%81%E7%A8%8B"><span class="toc-text">五、SQL注入流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%BB%E6%89%BESQL%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="toc-text">寻找SQL注入点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E6%B5%81%E7%A8%8B"><span class="toc-text">SQL注入流程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD-%E3%80%81SQL%E6%89%8B%E5%B7%A5%E6%B3%A8%E5%85%A5%E6%96%B9%E6%B3%95"><span class="toc-text">六 、SQL手工注入方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BB%93%E6%9E%84%EF%BC%88%E9%87%8D%E7%82%B9%EF%BC%9ASQL%E5%B1%82%EF%BC%89"><span class="toc-text">MySQL数据库结构（重点：SQL层）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MySQL%E6%89%8B%E5%B7%A5%E6%B3%A8%E5%85%A5%E6%96%B9%E6%B3%95"><span class="toc-text">MySQL手工注入方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%EF%BC%9ASQLi-Labs-Less-1%E8%A7%A3%E9%A2%98"><span class="toc-text">实战：SQLi-Labs&#x2F;Less-1解题</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E4%B8%A4%E6%AC%BE%E5%B7%A5%E5%85%B7%E7%AE%80%E4%BB%8B"><span class="toc-text">七、两款工具简介</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E4%B8%80%EF%BC%9AHackBar"><span class="toc-text">工具一：HackBar</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E4%BA%8C%EF%BC%9ASQLmap%EF%BC%88%E8%AF%A6%E8%A7%A3%E5%BE%85%E8%A1%A5%EF%BC%89"><span class="toc-text">工具二：SQLmap（详解待补）</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </section>
+
+
+  
+
+
+</aside>
+
+
+
+		  
+		  <!--此文件用来存放一些不方便取值的变量-->
+<!--思路大概是将值藏到重加载的区域内-->
+
+<script>
+  window.pdata={}
+  pdata.ispage=true;
+  pdata.postTitle="【Web安全】一、SQL注入基础";
+  pdata.commentPath="";
+  pdata.commentPlaceholder="";
+  // header 这里无论是否开启pjax都需要
+  var l_header=document.getElementById("l_header");
+  
+  l_header.classList.add("show");
+  
+  
+    // cover
+    var cover_wrapper=document.querySelector('.cover-wrapper');
+    
+    cover_wrapper.id="none";
+    cover_wrapper.style.display="none";
+    
+  
+</script>
+
+        </div>
+        
+  
+  <footer class="footer clearfix">
+    <br><br>
+    
+      
+        <div class="aplayer-container">
+          
+
+
+        </div>
+      
+    
+      
+        <br>
+        <div class="social-wrapper">
+          
+            
+          
+            
+          
+            
+          
+        </div>
+      
+    
+      
+        <div><p>Blog content follows the <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) License</a></p>
+</div>
+      
+    
+      
+        
+          <div><p><span id="lc-sv">本站总访问量为 <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span> 次</span> <span id="lc-uv">访客数为 <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span> 人</span></p>
+</div>
+        
+      
+    
+      
+        Use
+        <a href="https://github.com/volantis-x/hexo-theme-volantis/tree/4.3.1" target="_blank" class="codename">Volantis</a>
+        as theme
+      
+    
+      
+        <div class='copyright'>
+        <p><a href="/">Copyright © 2017-2020 XXX</a></p>
+
+        </div>
+      
+    
+  </footer>
+
+
+        <a id="s-top" class="fas fa-arrow-up fa-fw" href="javascript:void(0)"></a>
+      </div>
+    </div>
+    <div>
+      <script>
+/************这个文件存放不需要重载的全局变量和全局函数*********/
+window.volantis={};
+window.volantis.loadcss=document.getElementById("loadcss");
+/******************** Pjax ********************************/
+function VPjax(){
+	this.list=[] // 存放回调函数
+	this.start=()=>{
+	  for(var i=0;i<this.list.length;i++){
+		this.list[i].run();
+	  }
+	}
+	this.push=(fn,name)=>{
+		var f=new PjaxItem(fn,name);
+		this.list.push(f);
+	}
+	// 构造一个可以run的对象
+	function PjaxItem(fn,name){
+		// 函数名称
+		this.name = name || fn.name
+		// run方法
+		this.run=()=>{
+			fn()
+		}
+	}
+}
+volantis.pjax={}
+volantis.pjax.method={
+	complete: new VPjax(),
+	error: new VPjax(),
+	send: new VPjax()
+}
+volantis.pjax={
+	...volantis.pjax,
+	push: volantis.pjax.method.complete.push,
+	error: volantis.pjax.method.error.push,
+	send: volantis.pjax.method.send.push
+}
+/********************脚本懒加载函数********************************/
+// 已经加入了setTimeout
+function loadScript(src, cb) {
+	setTimeout(function() {
+		var HEAD = document.getElementsByTagName('head')[0] || document.documentElement;
+		var script = document.createElement('script');
+		script.setAttribute('type','text/javascript');
+		if (cb) script.onload = cb;
+		script.setAttribute('src', src);
+		HEAD.appendChild(script);
+	});
+}
+//https://github.com/filamentgroup/loadCSS
+var loadCSS = function( href, before, media, attributes ){
+	var doc = window.document;
+	var ss = doc.createElement( "link" );
+	var ref;
+	if( before ){
+		ref = before;
+	}
+	else {
+		var refs = ( doc.body || doc.getElementsByTagName( "head" )[ 0 ] ).childNodes;
+		ref = refs[ refs.length - 1];
+	}
+	var sheets = doc.styleSheets;
+	if( attributes ){
+		for( var attributeName in attributes ){
+			if( attributes.hasOwnProperty( attributeName ) ){
+				ss.setAttribute( attributeName, attributes[attributeName] );
+			}
+		}
+	}
+	ss.rel = "stylesheet";
+	ss.href = href;
+	ss.media = "only x";
+	function ready( cb ){
+		if( doc.body ){
+			return cb();
+		}
+		setTimeout(function(){
+			ready( cb );
+		});
+	}
+	ready( function(){
+		ref.parentNode.insertBefore( ss, ( before ? ref : ref.nextSibling ) );
+	});
+	var onloadcssdefined = function( cb ){
+		var resolvedHref = ss.href;
+		var i = sheets.length;
+		while( i-- ){
+			if( sheets[ i ].href === resolvedHref ){
+				return cb();
+			}
+		}
+		setTimeout(function() {
+			onloadcssdefined( cb );
+		});
+	};
+	function loadCB(){
+		if( ss.addEventListener ){
+			ss.removeEventListener( "load", loadCB );
+		}
+		ss.media = media || "all";
+	}
+	if( ss.addEventListener ){
+		ss.addEventListener( "load", loadCB);
+	}
+	ss.onloadcssdefined = onloadcssdefined;
+	onloadcssdefined( loadCB );
+	return ss;
+};
+</script>
+<script>
+  
+  loadCSS("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14/css/all.min.css", window.volantis.loadcss);
+  
+  
+  
+  
+</script>
+<!-- required -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5/dist/jquery.min.js"></script>
+
+<script>
+  function pjax_fancybox() {
+    $(".md .gallery").find("img").each(function () { //渲染 fancybox
+      var element = document.createElement("a"); // a 标签
+      $(element).attr("class", "fancybox");
+      $(element).attr("pjax-fancybox", "");  // 过滤 pjax
+      $(element).attr("href", $(this).attr("src"));
+      if ($(this).attr("data-original")) {
+        $(element).attr("href", $(this).attr("data-original"));
+      }
+      $(element).attr("data-fancybox", "images");
+      var caption = "";   // 描述信息
+      if ($(this).attr('alt')) {  // 判断当前页面是否存在描述信息
+        $(element).attr('data-caption', $(this).attr('alt'));
+        caption = $(this).attr('alt');
+      }
+      var div = document.createElement("div");
+      $(div).addClass("fancybox");
+      $(this).wrap(div); // 最外层套 div ，其实主要作用还是 class 样式
+      var span = document.createElement("span");
+      $(span).addClass("image-caption");
+      $(span).text(caption); // 加描述
+      $(this).after(span);  // 再套一层描述
+      $(this).wrap(element);  // 最后套 a 标签
+    })
+    $(".md .gallery").find("img").fancybox({
+      selector: '[data-fancybox="images"]',
+      hash: false,
+      loop: false,
+      closeClick: true,
+      helpers: {
+        overlay: {closeClick: true}
+      },
+      buttons: [
+        "zoom",
+        "close"
+      ]
+    });
+  };
+  function SCload_fancybox() {
+    if ($(".md .gallery").find("img").length == 0) return;
+    loadCSS("https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css", document.getElementById("loadcss"));
+    loadScript('https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js', pjax_fancybox)
+  };
+  $(function () {
+    SCload_fancybox();
+  });
+  function Pjax_SCload_fancybox(){
+	if (typeof $.fancybox == "undefined") {
+	 SCload_fancybox();
+    } else {
+	 pjax_fancybox();
+    }
+  }
+  volantis.pjax.push(Pjax_SCload_fancybox)
+  volantis.pjax.send(()=>{
+      if (typeof $.fancybox != "undefined") {
+        $.fancybox.close();    // 关闭弹窗
+      }
+  },'fancybox')
+</script>
+
+
+<!-- internal -->
+
+
+
+
+<script>
+  function loadIssuesJS() {
+    if ($(".md").find(".issues-api").length == 0) return;
+	
+	  loadScript('/js/issues.js');
+	
+  };
+  $(function () {
+    loadIssuesJS();
+  });
+  volantis.pjax.push(()=>{
+	if (typeof IssuesAPI == "undefined") {
+	  loadIssuesJS();
+	}
+  },"IssuesJS")
+</script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 0
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    lazyLoadInstance.update();
+  });
+  document.addEventListener('pjax:complete', function () {
+    lazyLoadInstance.update();
+  });
+</script>
+
+
+
+
+  
+
+<script>
+  window.FPConfig = {
+	delay: 0,
+	ignoreKeywords: [],
+	maxRPS: 5,
+	hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/gh/gijo-varghese/flying-pages@2.1.2/flying-pages.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+<script src="/js/valine.js"></script>
+
+
+<script>
+  function emoji(path, idx, ext) {
+    return path + "/" + path + "-" + idx + "." + ext;
+  }
+  var emojiMaps = {};
+  for (var i = 1; i <= 54; i++) {
+    emojiMaps['tieba-' + i] = emoji('tieba', i, 'png');
+  }
+  for (var i = 1; i <= 101; i++) {
+    emojiMaps['qq-' + i] = emoji('qq', i, 'gif');
+  }
+  for (var i = 1; i <= 116; i++) {
+    emojiMaps['aru-' + i] = emoji('aru', i, 'gif');
+  }
+  for (var i = 1; i <= 125; i++) {
+    emojiMaps['twemoji-' + i] = emoji('twemoji', i, 'png');
+  }
+  for (var i = 1; i <= 4; i++) {
+    emojiMaps['weibo-' + i] = emoji('weibo', i, 'png');
+  }
+  function pjax_valine() {
+    if(!document.querySelectorAll("#valine_container")[0])return;
+    let pagePlaceholder = pdata.commentPlaceholder || "快来评论吧~";
+    let path = pdata.commentPath;
+    if (path.length == 0) {
+      let defaultPath = '';
+      path = defaultPath || decodeURI(window.location.pathname);
+    }
+    var valine = new Valine();
+    valine.init(Object.assign({"path":null,"placeholder":"快来评论吧~","appId":null,"appKey":null,"meta":["nick","mail","link"],"requiredFields":["nick","mail"],"enableQQ":true,"recordIP":false,"avatar":"robohash","pageSize":10,"lang":"zh-cn","highlight":true,"mathJax":false}, {
+      el: '#valine_container',
+      path: path,
+      placeholder: pagePlaceholder,
+      emojiCDN: 'https://cdn.jsdelivr.net/gh/volantis-x/cdn-emoji/valine/',
+      emojiMaps: emojiMaps,
+    }))
+  }
+  $(function () {
+    pjax_valine();
+  });
+  volantis.pjax.push(pjax_valine);
+</script>
+
+
+
+
+
+
+  
+<script src="/js/app.js"></script>
+
+
+
+<!-- optional -->
+
+  <script>
+const SearchServiceimagePath="https://cdn.jsdelivr.net/gh/volantis-x/cdn-volantis@master/img/";
+const ROOT =  ("/" || "/").endsWith('/') ? ("/" || "/") : ("//" || "/" );
+
+$('.input.u-search-input').one('focus',function(){
+	
+		loadScript('/js/search/hexo.js',setSearchService);
+	
+})
+
+function listenSearch(){
+  
+    customSearch = new HexoSearch({
+      imagePath: SearchServiceimagePath
+    });
+  
+}
+function setSearchService() {
+	listenSearch();
+	
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+  <script defer>
+
+  const LCCounter = {
+    app_id: 'u9j57bwJod4EDmXWdxrwuqQT-MdYXbMMI',
+    app_key: 'jfHtEKVE24j0IVCGHbvuFClp',
+    custom_api_server: '',
+
+    // 查询存储的记录
+    getRecord(Counter, url, title) {
+      return new Promise(function (resolve, reject) {
+        Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({url})))
+          .then(resp => resp.json())
+          .then(({results, code, error}) => {
+            if (code === 401) {
+              throw error;
+            }
+            if (results && results.length > 0) {
+              var record = results[0];
+              resolve(record);
+            } else {
+              Counter('post', '/classes/Counter', {url, title: title, times: 0})
+                .then(resp => resp.json())
+                .then((record, error) => {
+                  if (error) {
+                    throw error;
+                  }
+                  resolve(record);
+                }).catch(error => {
+                console.error('Failed to create', error);
+                reject(error);
+              });
+            }
+          }).catch((error) => {
+          console.error('LeanCloud Counter Error:', error);
+          reject(error);
+        });
+      })
+    },
+
+    // 发起自增请求
+    increment(Counter, incrArr) {
+      return new Promise(function (resolve, reject) {
+        Counter('post', '/batch', {
+          "requests": incrArr
+        }).then((res) => {
+          res = res.json();
+          if (res.error) {
+            throw res.error;
+          }
+          resolve(res);
+        }).catch((error) => {
+          console.error('Failed to save visitor count', error);
+          reject(error);
+        });
+      });
+    },
+
+    // 构建自增请求体
+    buildIncrement(objectId) {
+      return {
+        "method": "PUT",
+        "path": `/1.1/classes/Counter/${ objectId }`,
+        "body": {
+          "times": {
+            '__op': 'Increment',
+            'amount': 1
+          }
+        }
+      }
+    },
+
+    // 校验是否为有效的 UV
+    validUV() {
+      var key = 'LeanCloudUVTimestamp';
+      var flag = localStorage.getItem(key);
+      if (flag) {
+        // 距离标记小于 24 小时则不计为 UV
+        if (new Date().getTime() - parseInt(flag) <= 86400000) {
+          return false;
+        }
+      }
+      localStorage.setItem(key, new Date().getTime().toString());
+      return true;
+    },
+
+    addCount(Counter) {
+      var enableIncr = '' === 'true' && window.location.hostname !== 'localhost';
+      enableIncr = true;
+      var getterArr = [];
+      var incrArr = [];
+      // 请求 PV 并自增
+      var pvCtn = document.querySelector('#lc-sv');
+      if (pvCtn || enableIncr) {
+        var pvGetter = this.getRecord(Counter, 'http://example.com' + '/#lc-sv', 'Visits').then((record) => {
+          incrArr.push(this.buildIncrement(record.objectId))
+          var eles = document.querySelectorAll('#lc-sv #number');
+          if (eles.length > 0) {
+            eles.forEach((el,index,array)=>{
+              el.innerText = record.times + 1;
+              if (pvCtn) {
+                pvCtn.style.display = 'inline';
+              }
+            })
+          }
+        });
+        getterArr.push(pvGetter);
+      }
+
+      // 请求 UV 并自增
+      var uvCtn = document.querySelector('#lc-uv');
+      if (uvCtn || enableIncr) {
+        var uvGetter = this.getRecord(Counter, 'http://example.com' + '/#lc-uv', 'Visitors').then((record) => {
+          var vuv = this.validUV();
+          vuv && incrArr.push(this.buildIncrement(record.objectId))
+          var eles = document.querySelectorAll('#lc-uv #number');
+          if (eles.length > 0) {
+            eles.forEach((el,index,array)=>{
+              el.innerText = record.times + (vuv ? 1 : 0);
+              if (uvCtn) {
+                uvCtn.style.display = 'inline';
+              }
+            })
+          }
+        });
+        getterArr.push(uvGetter);
+      }
+
+      // 请求文章的浏览数，如果是当前页面就自增
+      var allPV = document.querySelectorAll('#lc-pv');
+      if (allPV.length > 0 || enableIncr) {
+        for (i = 0; i < allPV.length; i++) {
+          let pv = allPV[i];
+          let title = pv.getAttribute('data-title');
+          var url = 'http://example.com' + pv.getAttribute('data-path');
+          if (url) {
+            var viewGetter = this.getRecord(Counter, url, title).then((record) => {
+              // 是当前页面就自增
+              let curPath = window.location.pathname;
+              if (curPath.includes('index.html')) {
+                curPath = curPath.substring(0, curPath.lastIndexOf('index.html'));
+              }
+              if (pv.getAttribute('data-path') == curPath) {
+                incrArr.push(this.buildIncrement(record.objectId));
+              }
+              if (pv) {
+                var ele = pv.querySelector('#lc-pv #number');
+                if (ele) {
+                  if (pv.getAttribute('data-path') == curPath) {
+                    ele.innerText = (record.times || 0) + 1;
+                  } else {
+                    ele.innerText = record.times || 0;
+                  }
+                  pv.style.display = 'inline';
+                }
+              }
+            });
+            getterArr.push(viewGetter);
+          }
+        }
+      }
+
+      // 如果启动计数自增，批量发起自增请求
+      if (enableIncr) {
+        Promise.all(getterArr).then(() => {
+          incrArr.length > 0 && this.increment(Counter, incrArr);
+        })
+      }
+
+    },
+
+
+    fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${ api_server }/1.1${ url }`, {
+          method,
+          headers: {
+            'X-LC-Id': this.app_id,
+            'X-LC-Key': this.app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      this.addCount(Counter);
+    },
+
+    refreshCounter() {
+      var api_server = this.app_id.slice(-9) !== '-MdYXbMMI' ? this.custom_api_server : `https://${ this.app_id.slice(0, 8).toLowerCase() }.api.lncldglobal.com`;
+      if (api_server) {
+        this.fetchData(api_server);
+      } else {
+        fetch('https://app-router.leancloud.cn/2/route?appId=' + this.app_id)
+          .then(resp => resp.json())
+          .then(({api_server}) => {
+            this.fetchData('https://' + api_server);
+          });
+      }
+    }
+
+  };
+
+  LCCounter.refreshCounter();
+
+  document.addEventListener('pjax:complete', function () {
+    LCCounter.refreshCounter();
+  });
+</script>
+
+
+
+
+  <script>
+const rootElement = document.documentElement;
+const darkModeStorageKey = "user-color-scheme";
+const rootElementDarkModeAttributeName = "data-user-color-scheme";
+
+const setLS = (k, v) => {
+    localStorage.setItem(k, v);
+};
+
+const removeLS = (k) => {
+    localStorage.removeItem(k);
+};
+
+const getLS = (k) => {
+    return localStorage.getItem(k);
+};
+
+const getModeFromCSSMediaQuery = () => {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
+const resetRootDarkModeAttributeAndLS = () => {
+  rootElement.removeAttribute(rootElementDarkModeAttributeName);
+  removeLS(darkModeStorageKey);
+};
+
+const validColorModeKeys = {
+  dark: true,
+  light: true,
+};
+
+const applyCustomDarkModeSettings = (mode) => {
+  const currentSetting = mode || getLS(darkModeStorageKey);
+
+  if (currentSetting === getModeFromCSSMediaQuery()) {
+    resetRootDarkModeAttributeAndLS();
+  } else if (validColorModeKeys[currentSetting]) {
+    rootElement.setAttribute(rootElementDarkModeAttributeName, currentSetting);
+  } else {
+    resetRootDarkModeAttributeAndLS();
+  }
+};
+
+const invertDarkModeObj = {
+  dark: "light",
+  light: "dark",
+};
+
+/**
+ * get target mode
+ */
+const toggleCustomDarkMode = () => {
+  let currentSetting = getLS(darkModeStorageKey);
+
+  if (validColorModeKeys[currentSetting]) {
+    currentSetting = invertDarkModeObj[currentSetting];
+  } else if (currentSetting === null) {
+    currentSetting = invertDarkModeObj[getModeFromCSSMediaQuery()];
+  } else {
+    return;
+  }
+  setLS(darkModeStorageKey, currentSetting);
+  return currentSetting;
+};
+
+/**
+ * bind click event for toggle button
+ */
+var btn=$("#wrapper .toggle-mode-btn,#rightmenu-wrapper .toggle-mode-btn");
+function bindToggleButton() {
+    btn.on('click',(e) => {
+      const mode = toggleCustomDarkMode();
+      applyCustomDarkModeSettings(mode);
+    });
+}
+
+applyCustomDarkModeSettings();
+document.addEventListener("DOMContentLoaded", bindToggleButton);
+volantis.pjax.push(bindToggleButton);
+volantis.pjax.send(()=>{
+	btn.unbind('click');
+},'toggle-mode-btn-unbind');
+</script>
+
+
+
+
+
+
+
+
+<script>
+function listennSidebarTOC() {
+  const navItems = document.querySelectorAll(".toc li");
+  if (!navItems.length) return;
+  const sections = [...navItems].map((element) => {
+    const link = element.querySelector(".toc-link");
+    const target = document.getElementById(
+      decodeURI(link.getAttribute("href")).replace("#", "")
+    );
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.scrollTo({
+		top: target.offsetTop + 100,
+		
+		behavior: "smooth"
+		
+	  });
+    });
+    return target;
+  });
+
+  function activateNavByIndex(target) {
+    if (target.classList.contains("active-current")) return;
+
+    document.querySelectorAll(".toc .active").forEach((element) => {
+      element.classList.remove("active", "active-current");
+    });
+    target.classList.add("active", "active-current");
+    let parent = target.parentNode;
+    while (!parent.matches(".toc")) {
+      if (parent.matches("li")) parent.classList.add("active");
+      parent = parent.parentNode;
+    }
+  }
+
+  function findIndex(entries) {
+    let index = 0;
+    let entry = entries[index];
+    if (entry.boundingClientRect.top > 0) {
+      index = sections.indexOf(entry.target);
+      return index === 0 ? 0 : index - 1;
+    }
+    for (; index < entries.length; index++) {
+      if (entries[index].boundingClientRect.top <= 0) {
+        entry = entries[index];
+      } else {
+        return sections.indexOf(entry.target);
+      }
+    }
+    return sections.indexOf(entry.target);
+  }
+
+  function createIntersectionObserver(marginTop) {
+    marginTop = Math.floor(marginTop + 10000);
+    let intersectionObserver = new IntersectionObserver(
+      (entries, observe) => {
+        let scrollHeight = document.documentElement.scrollHeight + 100;
+        if (scrollHeight > marginTop) {
+          observe.disconnect();
+          createIntersectionObserver(scrollHeight);
+          return;
+        }
+        let index = findIndex(entries);
+        activateNavByIndex(navItems[index]);
+      },
+      {
+        rootMargin: marginTop + "px 0px -100% 0px",
+        threshold: 0,
+      }
+    );
+    sections.forEach((element) => {
+      element && intersectionObserver.observe(element);
+    });
+  }
+  createIntersectionObserver(document.documentElement.scrollHeight);
+}
+
+document.addEventListener("DOMContentLoaded", listennSidebarTOC);
+document.addEventListener("pjax:success", listennSidebarTOC);
+</script>
+
+<!-- more -->
+
+ 
+	   
+	    
+
+
+<script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script>
+
+
+<script>
+    var pjax;
+    document.addEventListener('DOMContentLoaded', function () {
+      pjax = new Pjax({
+        elements: 'a[href]:not([href^="#"]):not([href="javascript:void(0)"]):not([pjax-fancybox])',
+        selectors: [
+          "title",
+          
+          "#pjax-container",
+          "#pjax-header-nav-list"
+        ],
+        cacheBust: false,   // url 地址追加时间戳，用以避免浏览器缓存
+        timeout: 5000
+      });
+    });
+
+    document.addEventListener('pjax:send', function (e) {
+      //window.stop(); // 相当于点击了浏览器的停止按钮
+
+      try {
+        var currentUrl = window.location.pathname;
+        var targetUrl = e.triggerElement.href;
+        var banUrl = [""];
+        if (banUrl[0] != "") {
+          banUrl.forEach(item => {
+            if(currentUrl.indexOf(item) != -1 || targetUrl.indexOf(item) != -1) {
+              window.location.href = targetUrl;
+            }
+          });
+        }
+      } catch (error) {}
+
+      window.subData = null; // 移除标题（用于一二级导航栏切换处）
+
+      volantis.$switcher.removeClass('active'); // 关闭移动端激活的搜索框
+      volantis.$header.removeClass('z_search-open'); // 关闭移动端激活的搜索框
+      volantis.$wrapper.removeClass('sub'); // 跳转页面时关闭二级导航
+
+      // 解绑事件 避免重复监听
+      volantis.$topBtn.unbind('click');
+      $('.menu a').unbind('click');
+      $(window).unbind('resize');
+      $(window).unbind('scroll');
+      $(document).unbind('scroll');
+      $(document).unbind('click');
+      $('body').unbind('click');
+	  // 使用 volantis.pjax.send 方法传入pjax:send回调函数 参见layout/_partial/scripts/global.ejs
+	  volantis.pjax.method.send.start();
+    });
+
+    document.addEventListener('pjax:complete', function () {
+      $('.nav-main').find('.list-v').not('.menu-phone').removeAttr("style",""); // 移除小尾巴的移除
+      $('.menu-phone.list-v').removeAttr("style",""); // 移除小尾巴的移除
+      $('script[data-pjax], .pjax-reload script').each(function () {
+        $(this).parent().append($(this).remove());
+      });
+      try{
+		// 使用 volantis.pjax.push 方法传入重载函数 参见layout/_partial/scripts/global.ejs
+		volantis.pjax.method.complete.start();
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    document.addEventListener('pjax:error', function (e) {
+	  // 使用 volantis.pjax.error 方法传入pjax:error回调函数 参见layout/_partial/scripts/global.ejs
+	  volantis.pjax.method.error.start();
+      window.location.href = e.triggerElement.href;
+    });
+</script>
+ 
+	  
+    </div>
+  </body>
+</html>

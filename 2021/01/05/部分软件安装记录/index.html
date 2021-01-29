@@ -5,8 +5,6 @@
   <!-- SEO相关 -->
   
     
-      <meta name="robots" content="noindex,follow">
-    
   
   <!-- 渲染优化 -->
   <meta http-equiv='x-dns-prefetch-control' content='on' />
@@ -24,9 +22,11 @@
 
   <!-- 页面元数据 -->
   
-  <title>Category: Web安全 - Hexo</title>
+  <title>部分软件安装记录 - Hexo</title>
   
 
+  
+    <meta name="description" content="一些记不住的Linux和Docker命令。">
   
 
   <!-- feed -->
@@ -355,7 +355,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       <div id="l_cover">
   
     
-        <div id="full" class='cover-wrapper  dock' style="display: none;">
+        <div id="full" class='cover-wrapper post dock' style="display: none;">
           
             <div class='cover-bg lazyload placeholder' data-bg="https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture"></div>
           
@@ -430,258 +430,318 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
         <div class="body-wrapper" id="pjax-container">
           
 
-
 <div class='l_main'>
+  <article class="article post white-box reveal md shadow article-type-post" id="post" itemscope itemprop="blogPost">
   
+
+
+  
+  <div class="article-meta" id="top">
     
-      
-  <section class="post-list">
     
-      
+    
+      <h1 class="title">
+        部分软件安装记录
+      </h1>
+      <div class='new-meta-box'>
         
+          
+            
+<div class='new-meta-item author'>
+  <a class='author' href="/" rel="nofollow">
+    <img no-lazy src="">
+    <p>请设置文章作者</p>
+  </a>
+</div>
+
           
         
           
-        
+            
+  <div class='new-meta-item category'>
+    <a class='notlink'>
+      <i class="fas fa-folder-open fa-fw" aria-hidden="true"></i>
+      <a class="category-link" href="/categories/%E6%9D%82/">杂</a>
+    </a>
+  </div>
+
+
           
         
           
-        
+            <div class="new-meta-item date">
+  <a class='notlink'>
+    <i class="fas fa-calendar-alt fa-fw" aria-hidden="true"></i>
+    <p>发布于：Jan 5, 2021</p>
+  </a>
+</div>
+
           
         
+          
+            
+  <div class="new-meta-item browse leancloud">
+    <a class='notlink'>
       
-    
-    
-      
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow">
-  
-  
-  
-  
-    
-    <h2 class="article-title" >
-      <a href="/2020/04/08/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%94%E3%80%81XSS%E5%9F%BA%E7%A1%80/">
-        【Web安全】五、XSS基础
-      </a>
-    </h2>
-  
-  <div class='md'>
-    
-      <p>本文学习XSS基础以及DVWA模拟环境的几道例题。</p>
-    
+      <div id="lc-pv" data-title="部分软件安装记录" data-path="/2021/01/05/%E9%83%A8%E5%88%86%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/">
+        <i class="fas fa-eye fa-fw" aria-hidden="true"></i>
+        <span id='number'><i class="fas fa-circle-notch fa-spin fa-fw" aria-hidden="true"></i></span>
+        次浏览
+      </div>
+    </a>
   </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time>2020-04-08</time>
-        
-          <span class="dot"></span>
-          <a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="sep"></span><a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web%E5%AE%89%E5%85%A8/">Web安全</a>
+
+
+          
         
       </div>
+    
+  </div>
+
+
+  
+  
+  <p>一些记不住的Linux和Docker命令。</p>
+<a id="more"></a>
+
+
+
+
+<h2 id="Jupyter-Notebook"><a href="#Jupyter-Notebook" class="headerlink" title="Jupyter Notebook"></a>Jupyter Notebook</h2><h3 id="1-安装"><a href="#1-安装" class="headerlink" title="1. 安装"></a>1. 安装</h3><p>升级pip3 <code>pip3 install --upgrade pip&amp;pip3 install jupyter</code></p>
+<h3 id="2-运行"><a href="#2-运行" class="headerlink" title="2.运行"></a>2.运行</h3><p>查看帮助<code>jupyter notebook -h</code></p>
+<p>运行<code>jupyter notebook</code> 默认888端口</p>
+<p>指定端口 <code>jupyter notebook --port &lt;XXX&gt;</code></p>
+<p>后台运行 <code>jupyter notebook --no-browser</code></p>
+<h3 id="3-主题设置"><a href="#3-主题设置" class="headerlink" title="3.主题设置"></a>3.主题设置</h3><p>安装<code>pip3 install jupyterthemes</code></p>
+<p>列出可用的主题<code>jt -l</code></p>
+<p>选择主题<code>jt -t XXX</code></p>
+<h3 id="4-扩展设置"><a href="#4-扩展设置" class="headerlink" title="4.扩展设置"></a>4.扩展设置</h3><p>安装</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install jupyter_contrib_nbextensions</span><br><span class="line">jupyter contrib nbextension install --user</span><br><span class="line">pip install jupyter_nbextensions_configurator</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Homebrew"><a href="#Homebrew" class="headerlink" title="Homebrew"></a>Homebrew</h2><p>安装</p>
+<p> <code>/usr/bin/ruby -e &quot;$(curl -fsSL https://cdn.jsdelivr.net/gh/ineo6/homebrew-install/install)&quot;</code></p>
+<p>换源</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git -C <span class="string">&quot;<span class="subst">$(brew --repo)</span>&quot;</span> remote set-url origin https://mirrors.ustc.edu.cn/brew.git</span><br><span class="line">git -C <span class="string">&quot;<span class="subst">$(brew --repo)</span>&quot;</span> remote set-url origin https:*//mirrors.ustc.edu.cn/brew.git*</span><br></pre></td></tr></table></figure>
+
+
+<p>使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 查询：</span><br><span class="line">brew search 软件名</span><br><span class="line"></span><br><span class="line">// 安装：</span><br><span class="line">brew install 软件名</span><br><span class="line"></span><br><span class="line">// 卸载：</span><br><span class="line">brew uninstall 软件名</span><br><span class="line"></span><br><span class="line">// 更新 Homebrew：</span><br><span class="line">brew update </span><br><span class="line"></span><br><span class="line">// 查看 Homebrew 配置信息：</span><br><span class="line">brew config </span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="iTerm2-Oh-My-Zsh"><a href="#iTerm2-Oh-My-Zsh" class="headerlink" title="iTerm2 + Oh My Zsh"></a>iTerm2 + Oh My Zsh</h2><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/9c3439cc3bdb">参考地址</a></p>
+<p>被墙了需要手动下载并运行   <code>https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh</code></p>
+<p>设置主题</p>
+<ul>
+<li>找到文件 <code>open ~/.zshrc</code></li>
+<li>找到<code>ZSH_THEME=&quot;robbyrussell&quot;</code></li>
+<li>主题网站<code>https://github.com/ohmyzsh/ohmyzsh/wiki/Themes</code></li>
+</ul>
+<h2 id="alias"><a href="#alias" class="headerlink" title="alias"></a>alias</h2><h3 id="1-进入-bashrc-输入alias-jn-quot-jupyter-notebook-quot"><a href="#1-进入-bashrc-输入alias-jn-quot-jupyter-notebook-quot" class="headerlink" title="1.进入~/.bashrc  输入alias jn=&quot;jupyter notebook&quot;"></a>1.进入<code>~/.bashrc</code>  输入<code>alias jn=&quot;jupyter notebook&quot;</code></h3><h3 id="2-生效source-bashrc"><a href="#2-生效source-bashrc" class="headerlink" title="2.生效source ~/.bashrc"></a>2.生效<code>source ~/.bashrc</code></h3><h3 id="3-应用程序别名"><a href="#3-应用程序别名" class="headerlink" title="3. 应用程序别名"></a>3. 应用程序别名</h3><p><code>alias subl=&quot;/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl&quot;</code></p>
+<h2 id="Command-Line-Tools"><a href="#Command-Line-Tools" class="headerlink" title="Command Line Tools"></a>Command Line Tools</h2><ul>
+<li>Apple 家官网：<a target="_blank" rel="noopener" href="https://developer.apple.com/download/more/">https://developer.apple.com/download/more/</a></li>
+<li>以 Apple ID 登录</li>
+<li>在搜索框搜索 <code>Command Line Tools</code></li>
+<li>打开你 macOS 上的 XCode，检查其版本号</li>
+<li>下载对应版本的 <code>Command Line Tools</code> 镜像（<code>*.dmg</code>）</li>
+<li>从镜像里手工安装</li>
+</ul>
+<h2 id="Ubuntu-缺少依赖问题"><a href="#Ubuntu-缺少依赖问题" class="headerlink" title="Ubuntu 缺少依赖问题"></a>Ubuntu 缺少依赖问题</h2><h2 id="Linux常用命令"><a href="#Linux常用命令" class="headerlink" title="Linux常用命令"></a>Linux常用命令</h2><table>
+<thead>
+<tr>
+<th align="center">用途</th>
+<th align="center">命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">关机</td>
+<td align="center"><code>shut down -h now</code></td>
+</tr>
+<tr>
+<td align="center">新建root用户</td>
+<td align="center"><code>sudo passwd root</code></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>换源</p>
+<p>sudo cp /etc/apt/sources.list /etc/apt/sources_init.list</p>
+<p>sudo gedit /etc/apt/sources.list</p>
+<p>deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a> bionic main restricted universe multiverse deb-src <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a> bionic main restricted universe multiverse deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a> bionic-security main restricted universe multiverse deb-src <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a> bionic-security main restricted universe multiverse deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a> bionic-updates main restricted universe multiverse deb-src <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a> bionic-updates main restricted universe multiverse deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a> bionic-proposed main restricted universe multiverse deb-src <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a> bionic-proposed main restricted universe multiverse deb <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a> bionic-backports main restricted universe multiverse deb-src <a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/ubuntu/">http://mirrors.aliyun.com/ubuntu/</a> bionic-backports main restricted universe multiverse</p>
+<h2 id="Hexo个人博客"><a href="#Hexo个人博客" class="headerlink" title="Hexo个人博客"></a>Hexo个人博客</h2><h3 id="安装Gitbrew-install-git"><a href="#安装Gitbrew-install-git" class="headerlink" title="安装Gitbrew install git"></a>安装Git<code>brew install git</code></h3><h3 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">brew install nodejs</span><br><span class="line"></span><br><span class="line">brew install npm</span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">node -v</span><br><span class="line">npm -v</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">hexo -v</span><br><span class="line"></span><br><span class="line">hexo init myblog</span><br><span class="line"><span class="built_in">cd</span> myblog //进入这个myblog文件夹</span><br><span class="line">npm install</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hexo g</span><br><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+<h3 id="生成SSH添加到GitHub"><a href="#生成SSH添加到GitHub" class="headerlink" title="生成SSH添加到GitHub"></a>生成SSH添加到GitHub</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;yourname&quot;</span> </span><br><span class="line">git config --global user.email <span class="string">&quot;youremail&quot;</span></span><br><span class="line"></span><br><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;youremail&quot;</span></span><br><span class="line"></span><br><span class="line">Github-&gt;Setting-&gt;deploy keys id_rsa.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试</span></span><br><span class="line">ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+<h3 id="部署Hexo到Github"><a href="#部署Hexo到Github" class="headerlink" title="部署Hexo到Github"></a>部署Hexo到Github</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">open _config.yml</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">deploy:</span><br><span class="line">  <span class="built_in">type</span>: git</span><br><span class="line">  repo: https://github.com/YourgithubName/YourgithubName.github.io.git</span><br><span class="line">  branch: master</span><br><span class="line">  </span><br><span class="line">npm install hexo-deployer-git --save</span><br><span class="line">  </span><br><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+<h2 id="GitBook"><a href="#GitBook" class="headerlink" title="GitBook"></a>GitBook</h2><p>安装</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install gitbook-cli -g</span><br></pre></td></tr></table></figure>
+
+  
+  
+    
+    <div class='footer'>
       
-        <div>
-          <a class='readmore' href='/2020/04/08/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%94%E3%80%81XSS%E5%9F%BA%E7%A1%80/'>
-            Read More
-          </a>
+      
+      
+        <div class='copyright'>
+          <blockquote>
+            
+              
+                <p>博客内容遵循 署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0) 协议</p>
+
+              
+            
+              
+                <p>本文永久链接是：<a href=http://example.com/2021/01/05/%E9%83%A8%E5%88%86%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/>http://example.com/2021/01/05/%E9%83%A8%E5%88%86%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/</a></p>
+              
+            
+          </blockquote>
         </div>
+      
       
     </div>
   
+  
+    
 
+
+  <div class='article-meta' id="bottom">
+    <div class='new-meta-box'>
+      
+        
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-01-29T22:24:12+08:00">
+  <a class='notlink'>
+    <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
+    <p>更新于：Jan 29, 2021</p>
+  </a>
 </div>
 
-          </div>
         
       
         
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow">
-  
-  
-  
-  
+          
+
+        
+      
+        
+          
+  <div class="new-meta-item share -mob-share-list">
+  <div class="-mob-share-list share-body">
     
-    <h2 class="article-title" >
-      <a href="/2020/03/28/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E5%9B%9B%E3%80%81SQL%E6%B3%A8%E5%85%A5%E9%98%B2%E5%BE%A1%E7%BB%95%E8%BF%87/">
-        【Web安全】四、SQL注入防御绕过
-      </a>
-    </h2>
-  
-  <div class='md'>
+      
+        <a class="-mob-share-qq" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://example.com/2021/01/05/%E9%83%A8%E5%88%86%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/&title=部分软件安装记录 - Hexo&summary=一些记不住的Linux和Docker命令。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qq.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
     
-      <p>本文学习如何绕过开发者对SQL注入设置的防御机制，主要是通过宽字节、二次编码、二次注入、绕过WAF等方法来突破防御机制。从每种方法的原理、方法讲解，到利用Sqli-Labs模拟环境来实战。</p>
+      
+        <a class="-mob-share-qzone" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=http://example.com/2021/01/05/%E9%83%A8%E5%88%86%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/&title=部分软件安装记录 - Hexo&summary=一些记不住的Linux和Docker命令。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/qzone.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+        <a class="-mob-share-weibo" title="" rel="external nofollow noopener noreferrer noopener"
+          
+          target="_blank" href="http://service.weibo.com/share/share.php?url=http://example.com/2021/01/05/%E9%83%A8%E5%88%86%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85%E8%AE%B0%E5%BD%95/&title=部分软件安装记录 - Hexo&summary=一些记不住的Linux和Docker命令。"
+          
+          >
+          
+            <img src="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" class="lazyload" data-srcset="https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/logo/128/weibo.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=">
+          
+        </a>
+      
+    
+      
+    
+      
     
   </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
+</div>
+
+
+
         
-        <time>2020-03-28</time>
-        
-          <span class="dot"></span>
-          <a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="sep"></span><a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web%E5%AE%89%E5%85%A8/">Web安全</a>
-        
-      </div>
       
-        <div>
-          <a class='readmore' href='/2020/03/28/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E5%9B%9B%E3%80%81SQL%E6%B3%A8%E5%85%A5%E9%98%B2%E5%BE%A1%E7%BB%95%E8%BF%87/'>
-            Read More
-          </a>
-        </div>
+    </div>
+  </div>
+
+
+  
+  
+
+  
+    <div class="prev-next">
+      
+        <a class='prev' href='/2021/01/28/hello-world/'>
+          <p class='title'><i class="fas fa-chevron-left" aria-hidden="true"></i>Hello World</p>
+          <p class='content'>Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any ...</p>
+        </a>
+      
+      
+        <a class='next' href='/2020/12/05/Linux&Docker%E5%91%BD%E4%BB%A4/'>
+          <p class='title'>Linux&Docker命令<i class="fas fa-chevron-right" aria-hidden="true"></i></p>
+          <p class='content'>一些记不住的Linux和Docker命令。
+
+
+
+
+Linux命令1、添加用户
+sudo adduser newuser
+
+2、查看文件用户
+cat /etc/group 
+
+3、查看服务状态
+...</p>
+        </a>
       
     </div>
   
+</article>
 
+
+  
+
+  <article class="post white-box reveal shadow" id="comments">
+    <p ct><i class='fas fa-comments'></i> 评论</p>
+    
+    <div id="valine_container" class="valine_thread">
+  <i class="fas fa-cog fa-spin fa-fw fa-2x"></i>
 </div>
 
-          </div>
-        
-      
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow">
-  
-  
-  
-  
-    
-    <h2 class="article-title" >
-      <a href="/2020/03/25/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%B8%89%E3%80%81SQL%E7%9B%B2%E6%B3%A8/">
-        【Web安全】三、SQL盲注
-      </a>
-    </h2>
-  
-  <div class='md'>
-    
-      <p>本文学习SQL盲注，通过掌握布尔盲注、时间延迟盲注和DnsLog盲注三种盲注方法的原理，到利用Sqli-Labs模拟环境来实战。</p>
-    
-  </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time>2020-03-25</time>
-        
-          <span class="dot"></span>
-          <a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="sep"></span><a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web%E5%AE%89%E5%85%A8/">Web安全</a>
-        
-      </div>
-      
-        <div>
-          <a class='readmore' href='/2020/03/25/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%B8%89%E3%80%81SQL%E7%9B%B2%E6%B3%A8/'>
-            Read More
-          </a>
-        </div>
-      
-    </div>
-  
-
-</div>
-
-          </div>
-        
-      
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow">
-  
-  
-  
-  
-    
-    <h2 class="article-title" >
-      <a href="/2020/03/22/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%8C%E3%80%81SQL%E6%B3%A8%E5%85%A5%E8%AF%AD%E6%B3%95%E7%B1%BB%E5%9E%8B/">
-        【Web安全】二、SQL注入语法类型
-      </a>
-    </h2>
-  
-  <div class='md'>
-    
-      <p>本文学习SQL注入语法类型，主要介绍了两种注入语法，分别是UNION联合查询注入和报错注入，每一部分都会涉及到Sqli-Labs模拟实战环境。</p>
-    
-  </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time>2020-03-22</time>
-        
-          <span class="dot"></span>
-          <a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="sep"></span><a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web%E5%AE%89%E5%85%A8/">Web安全</a>
-        
-      </div>
-      
-        <div>
-          <a class='readmore' href='/2020/03/22/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%BA%8C%E3%80%81SQL%E6%B3%A8%E5%85%A5%E8%AF%AD%E6%B3%95%E7%B1%BB%E5%9E%8B/'>
-            Read More
-          </a>
-        </div>
-      
-    </div>
-  
-
-</div>
-
-          </div>
-        
-      
-        
-          <div class='post-wrapper'>
-            <div class="post post-v3 white-box reveal shadow">
-  
-  
-  
-  
-    
-    <h2 class="article-title" >
-      <a href="/2020/03/19/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%B8%80%E3%80%81SQL%E6%B3%A8%E5%85%A5%E5%9F%BA%E7%A1%80/">
-        【Web安全】一、SQL注入基础
-      </a>
-    </h2>
-  
-  <div class='md'>
-    
-      <p>本文学习SQL注入前的一些必备基础知识，包括了解Web应用框架、搭建后续学习所需的Sqli-Lab模拟靶场、解析SQL注入原理、学习MySQL基础知识（尤为重要的information_schema数据库）和熟悉SQL注入流程，最终使用手工注入方式解决Sqli-Labs/Less-1关卡。</p>
-    
-  </div>
-  
-    <div class='meta-v3' line_style='solid'>
-      <div>
-        
-        <time>2020-03-19</time>
-        
-          <span class="dot"></span>
-          <a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a><span class="sep"></span><a class="category-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web%E5%AE%89%E5%85%A8/">Web安全</a>
-        
-      </div>
-      
-        <div>
-          <a class='readmore' href='/2020/03/19/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E4%B8%80%E3%80%81SQL%E6%B3%A8%E5%85%A5%E5%9F%BA%E7%A1%80/'>
-            Read More
-          </a>
-        </div>
-      
-    </div>
-  
-
-</div>
-
-          </div>
-        
-      
-    
-  </section>
-  
-    
-  
+  </article>
 
 
-    
-  
+
+
+
+
 </div>
 <aside class='l_side'>
   
@@ -689,171 +749,28 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     
     
 
-<section class="widget blogger shadow desktop mobile">
-  <div class='content'>
-    
-      
-        <a class='avatar flat-box rectangle' href='/about/'>
-          <img no-lazy src='https://cdn.jsdelivr.net/gh/volantis-x/cdn-org/blog/Logo-NavBar@3x.png'/>
-        </a>
-      
-    
-    
-      <div class='text'>
-        
-        
-        
-          <p><span id="jinrishici-sentence">Hexo</span></p>
-          <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
-        
-      </div>
-    
-    
-      <div class="social-wrapper">
-        
-          
-            <a href="/atom.xml"
-              class="social fas fa-rss flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-          
-            <a href="mailto:me@xxx.com"
-              class="social fas fa-envelope flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-          
-            <a href="https://github.com/volantis-x/"
-              class="social fab fa-github flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-          
-            <a href="/"
-              class="social fas fa-headphones-alt flat-btn"
-              target="_blank"
-              rel="external nofollow noopener noreferrer">
-              
-            </a>
-          
-        
-      </div>
-    
-  </div>
-</section>
 
-  
 
-  
-    
-    
-  
-
-  <section class="widget category shadow desktop">
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
     
   <header>
     
-      <a href='/blog/categories/'><i class="fas fa-folder-open fa-fw" aria-hidden="true"></i><span class='name'>文章分类</span></a>
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
     
   </header>
 
 
     <div class='content'>
-      <ul class="entry navigation">
-        
-          <li><a class="flat-box"
-            title="/categories/OpenStack/" href="/categories/OpenStack/"
-            id="categoriesOpenStack"
-            ><div class='name'>OpenStack</div><div class='badge'>(9)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/Python%E5%AE%89%E5%85%A8%E7%BC%96%E7%A8%8B/" href="/categories/Python%E5%AE%89%E5%85%A8%E7%BC%96%E7%A8%8B/"
-            id="categoriesPythonE5AE89E585A8E7BC96E7A88B"
-            ><div class='name'>Python安全编程</div><div class='badge'>(6)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/Web%E5%AE%89%E5%85%A8/" href="/categories/Web%E5%AE%89%E5%85%A8/"
-            id="categoriesWebE5AE89E585A8"
-            ><div class='name'>Web安全</div><div class='badge'>(1)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/"
-            id="categoriesE5AF86E7A081E5ADA6"
-            ><div class='name'>密码学</div><div class='badge'>(1)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/%E5%B7%A5%E5%85%B7%E8%AF%B4%E6%98%8E%E4%B9%A6/" href="/categories/%E5%B7%A5%E5%85%B7%E8%AF%B4%E6%98%8E%E4%B9%A6/"
-            id="categoriesE5B7A5E585B7E8AFB4E6988EE4B9A6"
-            ><div class='name'>工具说明书</div><div class='badge'>(2)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/%E6%9D%82/" href="/categories/%E6%9D%82/"
-            id="categoriesE69D82"
-            ><div class='name'>杂</div><div class='badge'>(2)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/%E6%B5%8B%E8%AF%95/" href="/categories/%E6%B5%8B%E8%AF%95/"
-            id="categoriesE6B58BE8AF95"
-            ><div class='name'>测试</div><div class='badge'>(1)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/" href="/categories/%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/"
-            id="categoriesE7BD91E7BB9CE59FBAE7A180"
-            ><div class='name'>网络基础</div><div class='badge'>(1)</div></a></li>
-        
-          <li><a class="flat-box"
-            title="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"
-            id="categoriesE7BD91E7BB9CE5AE89E585A8"
-            ><div class='name'>网络安全</div><div class='badge'>(5)</div></a></li>
-        
-          <li><a class="flat-box child"
-            title="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web%E5%AE%89%E5%85%A8/" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/Web%E5%AE%89%E5%85%A8/"
-            id="categoriesE7BD91E7BB9CE5AE89E585A8WebE5AE89E585A8"
-            ><div class='name'>Web安全</div><div class='badge'>(5)</div></a></li>
-        
-      </ul>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Jupyter-Notebook"><span class="toc-text">Jupyter Notebook</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85"><span class="toc-text">1. 安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%BF%90%E8%A1%8C"><span class="toc-text">2.运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%B8%BB%E9%A2%98%E8%AE%BE%E7%BD%AE"><span class="toc-text">3.主题设置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%89%A9%E5%B1%95%E8%AE%BE%E7%BD%AE"><span class="toc-text">4.扩展设置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Homebrew"><span class="toc-text">Homebrew</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iTerm2-Oh-My-Zsh"><span class="toc-text">iTerm2 + Oh My Zsh</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#alias"><span class="toc-text">alias</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%BF%9B%E5%85%A5-bashrc-%E8%BE%93%E5%85%A5alias-jn-quot-jupyter-notebook-quot"><span class="toc-text">1.进入~&#x2F;.bashrc  输入alias jn&#x3D;&quot;jupyter notebook&quot;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%94%9F%E6%95%88source-bashrc"><span class="toc-text">2.生效source ~&#x2F;.bashrc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%88%AB%E5%90%8D"><span class="toc-text">3. 应用程序别名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Command-Line-Tools"><span class="toc-text">Command Line Tools</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ubuntu-%E7%BC%BA%E5%B0%91%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98"><span class="toc-text">Ubuntu 缺少依赖问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">Linux常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2"><span class="toc-text">Hexo个人博客</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Gitbrew-install-git"><span class="toc-text">安装Gitbrew install git</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85nodejs"><span class="toc-text">安装nodejs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85hexo"><span class="toc-text">安装hexo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90SSH%E6%B7%BB%E5%8A%A0%E5%88%B0GitHub"><span class="toc-text">生成SSH添加到GitHub</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2Hexo%E5%88%B0Github"><span class="toc-text">部署Hexo到Github</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GitBook"><span class="toc-text">GitBook</span></a></li></ol>
     </div>
   </section>
 
-
-  
-
-  
-    
-    
-  
-
-  <section class="widget tagcloud shadow desktop mobile">
-    
-  <header>
-    
-      <a href='/blog/tags/'><i class="fas fa-tags fa-fw" aria-hidden="true"></i><span class='name'>热门标签</span></a>
-    
-  </header>
-
-
-    <div class='content'>
-      <a href="/tags/Kali/" style="font-size: 14px; color: #999">Kali</a> <a href="/tags/SQL/" style="font-size: 24px; color: #555">SQL</a> <a href="/tags/SQLMAP/" style="font-size: 14px; color: #999">SQLMAP</a> <a href="/tags/Web%E5%AE%89%E5%85%A8/" style="font-size: 14px; color: #999">Web安全</a> <a href="/tags/XSS/" style="font-size: 14px; color: #999">XSS</a> <a href="/tags/http/" style="font-size: 14px; color: #999">http</a> <a href="/tags/tool/" style="font-size: 14px; color: #999">tool</a> <a href="/tags/%E6%B5%8B%E8%AF%95/" style="font-size: 14px; color: #999">测试</a> <a href="/tags/%E7%9B%B2%E6%B3%A8/" style="font-size: 19px; color: #777">盲注</a> <a href="/tags/%E8%AF%AD%E6%B3%95/" style="font-size: 14px; color: #999">语法</a>
-    </div>
-  </section>
-
-
-  
 
   
 
 
 </aside>
+
 
 
 		  
@@ -862,8 +779,8 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
 
 <script>
   window.pdata={}
-  pdata.ispage=false;
-  pdata.postTitle="";
+  pdata.ispage=true;
+  pdata.postTitle="部分软件安装记录";
   pdata.commentPath="";
   pdata.commentPlaceholder="";
   // header 这里无论是否开启pjax都需要

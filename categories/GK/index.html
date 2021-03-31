@@ -24,7 +24,7 @@
 
   <!-- 页面元数据 -->
   
-  <title>Archive: 2021/2 - Murray博客</title>
+  <title>Category: GK - Murray博客</title>
   
 
   
@@ -104,7 +104,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   <body>
     
 
-<header id="l_header" class="l_header auto shadow blur " style='opacity: 0' >
+<header id="l_header" class="l_header auto shadow blur show" style='opacity: 0' >
   <div class='container'>
   <div id='wrapper'>
     <div class='nav-sub'>
@@ -355,7 +355,7 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
       <div id="l_cover">
   
     
-        <div id="half" class='cover-wrapper  dock' style="display: ;">
+        <div id="full" class='cover-wrapper  dock' style="display: none;">
           
             <div class='cover-bg lazyload placeholder' data-bg="https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture"></div>
           
@@ -430,9 +430,11 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
         <div class="body-wrapper" id="pjax-container">
           
 
+
 <div class='l_main'>
-	
-		
+  
+    
+      
   <section class="post-list">
     
       
@@ -452,29 +454,29 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
     
     <h2 class="article-title" >
-      <a href="/2021/02/05/Git%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">
-        Git使用手册
+      <a href="/2021/03/01/GKNotes/">
+        GKNotes
       </a>
     </h2>
   
   <div class='md'>
     
-      <p>Git系统学习，使用手册。</p>
+      <p>GKNotes。</p>
     
   </div>
   
     <div class='meta-v3' line_style='solid'>
       <div>
         
-        <time>2021-02-05</time>
+        <time>2021-03-01</time>
         
           <span class="dot"></span>
-          <a class="category-link" href="/categories/%E5%B7%A5%E5%85%B7%E4%B9%A6/">工具书</a>
+          <a class="category-link" href="/categories/GK/">GK</a>
         
       </div>
       
         <div>
-          <a class='readmore' href='/2021/02/05/Git%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/'>
+          <a class='readmore' href='/2021/03/01/GKNotes/'>
             Read More
           </a>
         </div>
@@ -494,7 +496,8 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   
 
 
-	
+    
+  
 </div>
 <aside class='l_side'>
   
@@ -702,14 +705,14 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   // header 这里无论是否开启pjax都需要
   var l_header=document.getElementById("l_header");
   
-  l_header.classList.remove("show");
+  l_header.classList.add("show");
   
   
     // cover
     var cover_wrapper=document.querySelector('.cover-wrapper');
     
-    cover_wrapper.id="half";
-    cover_wrapper.style.display="";
+    cover_wrapper.id="none";
+    cover_wrapper.style.display="none";
     
   
 </script>

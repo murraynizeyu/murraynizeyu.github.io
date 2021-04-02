@@ -504,7 +504,78 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
   <p>参加过几次攻防演练，因此笔者对此经历总结一下。</p>
 <a id="more"></a>
 
-<p>一、</p>
+<h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p>想知道”盾“厚不厚，那么就需要”矛“来戳一戳，因此我们站在黑客的视角，梳理攻击流程，再针对性的进行防守设置。</p>
+<p>攻击者主要从外网纵向入侵和内网横向渗透。</p>
+<h4 id="外网纵向入侵"><a href="#外网纵向入侵" class="headerlink" title="外网纵向入侵"></a>外网纵向入侵</h4><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gp4ien6wylj313n0u0wn8.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/008eGmZEly1gp4ien6wylj313n0u0wn8.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="外网纵向入侵"></p>
+<h4 id="内网横向渗透"><a href="#内网横向渗透" class="headerlink" title="内网横向渗透"></a>内网横向渗透</h4><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gp4inf2mb7j31eq0u0n6o.jpg" class="lazyload" data-srcset="https://tva1.sinaimg.cn/large/008eGmZEly1gp4inf2mb7j31eq0u0n6o.jpg" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" alt="内网横向渗透"></p>
+<h2 id="二、攻防演练Pre"><a href="#二、攻防演练Pre" class="headerlink" title="二、攻防演练Pre"></a>二、攻防演练Pre</h2><h4 id="1-日常运维及资产梳理"><a href="#1-日常运维及资产梳理" class="headerlink" title="1.日常运维及资产梳理"></a>1.日常运维及资产梳理</h4><ul>
+<li><p>梳理软硬件资产。重点查看暴露在公网的端口的资产</p>
+</li>
+<li><p>清理常见CMS框架的特征。</p>
+</li>
+<li><p>更新软硬件资产的信息。</p>
+</li>
+<li><p>保持6个月以上系统日志、应用日志、中间件的访问日志。</p>
+</li>
+<li><p>针对网络、主机进行安全检查，并针对性的优化加固。</p>
+</li>
+</ul>
+<h4 id="2-新上线业务系统的风险评估"><a href="#2-新上线业务系统的风险评估" class="headerlink" title="2.新上线业务系统的风险评估"></a>2.新上线业务系统的风险评估</h4><ul>
+<li>未进行风险评估的业务系统禁止上线。</li>
+</ul>
+<h4 id="3-每月对防护机制进行排查"><a href="#3-每月对防护机制进行排查" class="headerlink" title="3.每月对防护机制进行排查"></a>3.每月对防护机制进行排查</h4><ul>
+<li>排查公网边界具有监测告警/安全防护机制</li>
+<li>排查安全设备应用层防护策略</li>
+<li>排查安全设备网络层访问控制</li>
+<li>排查操作系统本地访问控制</li>
+<li>排查安全软件防护策略</li>
+</ul>
+<h4 id="4-排查软件版本漏洞"><a href="#4-排查软件版本漏洞" class="headerlink" title="4. 排查软件版本漏洞"></a>4. 排查软件版本漏洞</h4><ul>
+<li>根据第三方漏洞平台（阿里应急响应中心等），匹配本地资产（操作系统、中间件、web框架），自动化告警漏洞存在和漏洞修复</li>
+</ul>
+<h4 id="5-排查软件逻辑漏洞"><a href="#5-排查软件逻辑漏洞" class="headerlink" title="5. 排查软件逻辑漏洞"></a>5. 排查软件逻辑漏洞</h4><ul>
+<li>代码审计、渗透测试发现</li>
+</ul>
+<h4 id="6-安全意识培训"><a href="#6-安全意识培训" class="headerlink" title="6. 安全意识培训"></a>6. 安全意识培训</h4><h4 id="7-监测告警机制构建"><a href="#7-监测告警机制构建" class="headerlink" title="7. 监测告警机制构建"></a>7. 监测告警机制构建</h4><ul>
+<li>内外网检测警告</li>
+<li>构建威胁情报系统</li>
+</ul>
+<h4 id="8-应急响应机制构建"><a href="#8-应急响应机制构建" class="headerlink" title="8. 应急响应机制构建"></a>8. 应急响应机制构建</h4><ul>
+<li>特定安全事件的应急预案及演练</li>
+<li>内网的可攻击面经</li>
+</ul>
+<h4 id="9-容错机制构建"><a href="#9-容错机制构建" class="headerlink" title="9. 容错机制构建"></a>9. 容错机制构建</h4><ul>
+<li>重要数据、入侵痕迹本地/异地备份</li>
+<li>周期性测试</li>
+</ul>
+<h4 id="10-蜜罐构建"><a href="#10-蜜罐构建" class="headerlink" title="10. 蜜罐构建"></a>10. 蜜罐构建</h4><ul>
+<li>开源蜜罐容易发生逃逸事件，因此不建议使用</li>
+</ul>
+<h2 id="三、攻防演练ing"><a href="#三、攻防演练ing" class="headerlink" title="三、攻防演练ing"></a>三、攻防演练ing</h2><p><strong>高强度、高重复性且容易发生错漏扫</strong></p>
+<p>一次性工作：</p>
+<ul>
+<li>情报共享：共享攻击源IP的威胁情报，注意交接班（交班人员直接加到本地的防守策略）</li>
+<li>人员保障：协调后台支撑专家远程待命，</li>
+<li>现场保护：保留溯源至公网ip及攻击路径待分析</li>
+<li>攻击溯源：根据现场残留痕迹进行最大程度的入侵溯源</li>
+<li>优化加固：根据应急处置报告中的优化建议进行安全隐患、安全风险优化，协助软件开发商进行漏洞优化，对漏洞修复的有效性进行复测</li>
+<li>争议处置：对于一些争议的加固意见，上报上级再分析</li>
+<li>宁错杀，不放过：对于可能会影响到该系统业务的ip，上报上级再分析</li>
+<li>值守计划：<ul>
+<li>24小时值守，预备替补人员应对突发情况</li>
+<li>编写值守成果（时间、封禁IP、漏洞修复程度等）</li>
+<li>尽量减少对接事宜，在值守人员处理完后方可交接下一位</li>
+</ul>
+</li>
+</ul>
+<p>重复性工作：</p>
+<ul>
+<li>巡检安全/告警系统：</li>
+<li>巡检安全防护硬件</li>
+<li>巡检安全防护软件</li>
+<li>巡检Windows</li>
+<li>巡检Linux</li>
+</ul>
 
   
   
@@ -539,10 +610,10 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     <div class='new-meta-box'>
       
         
-          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-03-31T18:36:24+08:00">
+          <div class="new-meta-item date" itemprop="dateUpdated" datetime="2021-04-02T14:31:54+08:00">
   <a class='notlink'>
     <i class="fas fa-edit fa-fw" aria-hidden="true"></i>
-    <p>更新于：Mar 31, 2021</p>
+    <p>更新于：Apr 2, 2021</p>
   </a>
 </div>
 
@@ -650,6 +721,20 @@ if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMo
     
 
 
+
+  <section class="widget toc-wrapper shadow desktop mobile" id="toc-div" >
+    
+  <header>
+    
+      <i class="fas fa-list fa-fw" aria-hidden="true"></i><span class='name'>本文目录</span>
+    
+  </header>
+
+
+    <div class='content'>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A6%82%E8%BF%B0"><span class="toc-text">一、概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A4%96%E7%BD%91%E7%BA%B5%E5%90%91%E5%85%A5%E4%BE%B5"><span class="toc-text">外网纵向入侵</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E6%A8%AA%E5%90%91%E6%B8%97%E9%80%8F"><span class="toc-text">内网横向渗透</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%94%BB%E9%98%B2%E6%BC%94%E7%BB%83Pre"><span class="toc-text">二、攻防演练Pre</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%97%A5%E5%B8%B8%E8%BF%90%E7%BB%B4%E5%8F%8A%E8%B5%84%E4%BA%A7%E6%A2%B3%E7%90%86"><span class="toc-text">1.日常运维及资产梳理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%96%B0%E4%B8%8A%E7%BA%BF%E4%B8%9A%E5%8A%A1%E7%B3%BB%E7%BB%9F%E7%9A%84%E9%A3%8E%E9%99%A9%E8%AF%84%E4%BC%B0"><span class="toc-text">2.新上线业务系统的风险评估</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%AF%8F%E6%9C%88%E5%AF%B9%E9%98%B2%E6%8A%A4%E6%9C%BA%E5%88%B6%E8%BF%9B%E8%A1%8C%E6%8E%92%E6%9F%A5"><span class="toc-text">3.每月对防护机制进行排查</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%8E%92%E6%9F%A5%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC%E6%BC%8F%E6%B4%9E"><span class="toc-text">4. 排查软件版本漏洞</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E6%8E%92%E6%9F%A5%E8%BD%AF%E4%BB%B6%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E"><span class="toc-text">5. 排查软件逻辑漏洞</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E5%AE%89%E5%85%A8%E6%84%8F%E8%AF%86%E5%9F%B9%E8%AE%AD"><span class="toc-text">6. 安全意识培训</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E7%9B%91%E6%B5%8B%E5%91%8A%E8%AD%A6%E6%9C%BA%E5%88%B6%E6%9E%84%E5%BB%BA"><span class="toc-text">7. 监测告警机制构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E6%9C%BA%E5%88%B6%E6%9E%84%E5%BB%BA"><span class="toc-text">8. 应急响应机制构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-%E5%AE%B9%E9%94%99%E6%9C%BA%E5%88%B6%E6%9E%84%E5%BB%BA"><span class="toc-text">9. 容错机制构建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10-%E8%9C%9C%E7%BD%90%E6%9E%84%E5%BB%BA"><span class="toc-text">10. 蜜罐构建</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%94%BB%E9%98%B2%E6%BC%94%E7%BB%83ing"><span class="toc-text">三、攻防演练ing</span></a></li></ol>
+    </div>
+  </section>
 
 
   
